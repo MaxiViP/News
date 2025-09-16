@@ -1,31 +1,5 @@
 @import "tailwindcss";
-
-/* плагины, если используешь */
-@plugin "@tailwindcss/typography";
+ 
+/* @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
-@plugin "@tailwindcss/line-clamp";
-
-/* базовый фон */
-html, body, #app { height: 100%; }
-body {
-  background: linear-gradient(#ffffff, #f8fafc);
-}
-
-/* скелетоны */
-.skeleton {
-  background: linear-gradient(90deg, rgba(0,0,0,0.06) 25%, rgba(0,0,0,0.12) 37%, rgba(0,0,0,0.06) 63%);
-  background-size: 400% 100%;
-  animation: shimmer 1.25s linear infinite;
-}
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* Fallback на случай, если Tailwind не загрузился:
-   класс .grid-fallback мы добавили на контейнер ленты */
-.grid-fallback {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-}
+@plugin "@tailwindcss/line-clamp"; */

@@ -1,8 +1,8 @@
 <template>
-  <div id="container">
+  <div id="container" class="mx-auto max-w-6xl px-4 sm:px-6">
     <header class="glass">
       <div class="bar">
-        <h1>Новостной портал</h1>
+        <h1>News and News</h1>
         <form class="search" @submit.prevent="$router.push('/search/'+(q||''))">
           <input v-model="q" type="search" placeholder="Поиск по новостям..." />
           <button>Искать</button>

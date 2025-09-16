@@ -1,11 +1,11 @@
 <template>
-  <article  class="card">
+  <article class="card">
     <div class="media">
       <img v-if="a.imageUrl" :src="a.imageUrl" :alt="a.title" loading="lazy" />
       <div v-else class="ph"></div>
     </div>
 
-    <div class="body" >
+    <div class="body">
       <h3 class="title">
         <a :href="a.url" target="_blank" rel="noopener">{{ a.title }}</a>
       </h3>
@@ -37,8 +37,8 @@ defineProps<{ a: any }>()
 
 .body { padding:14px; display:flex; flex-direction:column; gap:8px; }
 .title { margin:0; font-size:16px; line-height:1.25; }
-.title a { text-decoration: none; color:#111; }
-.title a:hover { text-decoration: underline; text-decoration-color:#9ca3af; }
+.title a { text-decoration:none; color:#111; }
+.title a:hover { text-decoration:underline; text-decoration-color:#9ca3af; }
 .summary { margin:0; color:#475569; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 .meta { display:flex; justify-content:space-between; font-size:12px; color:#6b7280; }
 .src { max-width:70%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }

@@ -16,11 +16,19 @@ export async function newsHandler(req: Request, res: Response) {
 
   const { category, country, page, q } = parsed.data
   const key = `news:${category}:${country}:${page}:${q ?? ''}`
+
   const cached = await cache.get<{ items: any[]; page: number; hasMore: boolean }>(key)
   if (cached) return res.json(cached)
 
-  const items = await fetchFromProviders({ category, country, page, q })
-  const payload = { items, page, hasMore: items.length > 0 }
-  await cache.set(key, payload, 60)
-  res.json(payload)
+  try {
+    const items = await fetchFromProviders({ category, country, page, q })
+    const payload = { items, page, hasMore: items.length > 0 }
+    await cache.set(key, payload, 300)                         // 5 мин
+    await cache.set(`last:${category}:${country}`, payload, 900) // 15 мин «последний удачный»
+    res.json(payload)
+  } catch (e: any) {
+    const fallback = await cache.get<{ items: any[] }>(`last:${category}:${country}`)
+    if (fallback) return res.json({ ...fallback, stale: true })
+    res.status(200).json({ items: [], page, hasMore: false, stale: true, error: 'unavailable' })
+  }
 }

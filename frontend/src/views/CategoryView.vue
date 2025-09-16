@@ -1,6 +1,5 @@
 <template>
   <CategoryTabs />
-
   <!-- сетка карточек -->
   <section class="grid-fix">
     <ArticleCard v-for="a in news.items" :key="a.id" :a="a" />
@@ -15,6 +14,7 @@
       <div class="skeleton-line" style="width:86%"></div>
     </div>
   </section>
+  
 
   <div class="center">
     <button v-if="news.hasMore && !news.loading" @click="news.load()" class="more">Загрузить ещё</button>
