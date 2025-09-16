@@ -1,3 +1,26 @@
+<template>
+  <CategoryTabs />
+
+  <!-- сетка карточек -->
+  <section class="grid-fix">
+    <ArticleCard v-for="a in news.items" :key="a.id" :a="a" />
+  </section>
+
+  <!-- скелетоны той же сеткой -->
+  <section v-if="news.loading" class="grid-fix" style="margin-top:8px">
+    <div v-for="n in 6" :key="n" class="skeleton-card">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-line" style="width:75%"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line" style="width:86%"></div>
+    </div>
+  </section>
+
+  <div class="center">
+    <button v-if="news.hasMore && !news.loading" @click="news.load()" class="more">Загрузить ещё</button>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -8,84 +31,52 @@ import CategoryTabs from '../components/CategoryTabs.vue'
 const route = useRoute()
 const news = useNews()
 
-function loadCategory() {
+async function loadCategory() {
   const cat = String(route.params.category || 'tech') as any
-  news.setCategory(cat)
-  news.load(true)
+  news.setCategory(cat); await news.load(true)
 }
 onMounted(loadCategory)
 watch(() => route.params.category, () => loadCategory())
 
+let ticking = false
 function onScroll() {
-  if (news.loading || !news.hasMore) return
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 800) {
-    news.load()
-  }
+  if (ticking) return
+  ticking = true
+  requestAnimationFrame(() => {
+    if (!news.loading && news.hasMore &&
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 800) {
+      news.load()
+    }
+    ticking = false
+  })
 }
-window.addEventListener('scroll', onScroll)
+onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }))
 onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 </script>
 
-<template>
-  <CategoryTabs />
-
-<TransitionGroup
-  name="cards"
-  tag="section"
-  class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
->
-  <ArticleCard v-for="a in news.items" :key="a.id" :a="a" />
-</TransitionGroup>
-
-
-  <!-- скелетоны -->
-  <section v-if="news.loading" class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    <div v-for="n in 6" :key="n" class="rounded-3xl border border-slate-200 bg-white/80 p-0 shadow-soft dark:border-slate-700 dark:bg-slate-800/60">
-      <div class="h-44 w-full skeleton"></div>
-      <div class="space-y-2 p-4">
-        <div class="h-5 w-3/4 skeleton rounded-md"></div>
-        <div class="h-4 w-full skeleton rounded-md"></div>
-        <div class="h-4 w-5/6 skeleton rounded-md"></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="flex items-center justify-center py-6">
-    <button v-if="news.hasMore && !news.loading"
-            @click="news.load()"
-            class="rounded-xl border border-slate-200 bg-white/70 px-4 py-2 text-sm font-medium shadow-sm
-                   hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 transition
-                   dark:border-slate-700 dark:bg-slate-800/70">
-      Загрузить ещё
-    </button>
-  </div>
-</template>
-
 <style scoped>
-/* надёжная сетка без Tailwind — fallback */
-.grid-fallback {
+/* сетка без Tailwind */
+.grid-fix {
   display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
 }
-
-/* если используешь TransitionGroup с class="grid grid-cols-1 ..." — добавь ещё этот класс на тот же тег */
 @media (min-width: 640px) {
-  .grid-fallback { gap: 18px; }
+  .grid-fix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (min-width: 1024px) {
-  .grid-fallback { gap: 20px; }
+  .grid-fix { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.center { display:flex; justify-content:center; padding: 20px 0; }
+.more {
+  border:1px solid #e5e7eb; background:#fff; border-radius:12px; padding:8px 14px; cursor:pointer;
 }
 
-/* выравниваем высоту превьюшек */
-.card-fallback .media {
-  height: 180px;
-  overflow: hidden;
+/* скелетоны */
+.skeleton-card {
+  border:1px solid #e5e7eb; border-radius:20px; background:#fff; padding:12px;
+  box-shadow: 0 6px 20px -12px rgba(0,0,0,.15);
 }
-.card-fallback .media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.skeleton-img { height:180px; background: #eee; border-radius:12px; margin-bottom:10px; }
+.skeleton-line { height:12px; background:#eee; border-radius:8px; margin:8px 0; }
 </style>
-
