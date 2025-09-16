@@ -26,13 +26,16 @@ const FEEDS: Record<Category, string[]> = {
     'https://lenta.ru/rss',
   ],
   sports: [
+    'https://rsport.ria.ru/export/rss2/archive/index.xml',
     'https://rssexport.rbc.ru/rbcnews/sport/20/full.rss',
   ],
   incidents: [
     'https://ria.ru/export/rss2/incidents/index.xml',
+    
     'https://lenta.ru/rss',
   ],
   auto: [
+    'https://rssexport.rbc.ru/rbcnews/news/30/full.rss',
     'https://rssexport.rbc.ru/rbcnews/auto/20/full.rss',
   ],
   esports: [
