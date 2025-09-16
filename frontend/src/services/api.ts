@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_BASE,
 })
 
-// ✅ Логируем базовый URL при запуске
+ // Для отладки:
 console.log('API baseURL:', api.defaults.baseURL)

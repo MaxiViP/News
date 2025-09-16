@@ -10,5 +10,13 @@ export default defineConfig({
       plugins: [tailwind(), autoprefixer()]
     }
   },
-  server: { port: 5173 }
+ server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:8080", // бэкенд
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, "/api"),
+      },
+    },
+  }
 })
