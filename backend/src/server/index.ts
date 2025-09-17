@@ -6,37 +6,34 @@ import { apiRouter } from './routes/index.js'
 
 const app = express()
 
-// ✅ CORS (ограничения по доменам, можно убрать в продакшене если фронт и бэк вместе)
-const allowed = (process.env.CORS_ORIGIN ?? '').split(',')
-app.use(
-	cors({
-		origin(origin, cb) {
-			if (!origin) return cb(null, true)
-			if (allowed.includes(origin)) return cb(null, true)
-			return cb(new Error(`CORS: ${origin} not allowed`))
-		},
-		credentials: false,
-		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-		allowedHeaders: ['Content-Type', 'Authorization'],
-	})
-)
+// CORS
+app.use(cors())
 
-// ✅ API endpoints
+// API
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 app.use('/api', apiRouter)
 
-// ✅ Путь до собранного фронта (dist)
+// Раздача фронта
 const distPath = path.resolve(__dirname, '../../frontend/dist')
 app.use(express.static(distPath))
 
-// ✅ SPA fallback (Vue router)
+// SPA fallback
 app.use((_req, res) => {
 	res.sendFile(path.join(distPath, 'index.html'))
 })
 
-// ✅ Запуск
+// PORT
 const PORT = Number(process.env.PORT) || 8080
 
+// Запуск
 app.listen(PORT, '0.0.0.0', () => {
-	console.log(`✅ Server listening on http://0.0.0.0:${PORT}`)
+	console.log(`✅ Server running on http://0.0.0.0:${PORT}`)
+})
+
+// Глобальный catch
+process.on('uncaughtException', err => {
+	console.error('❌ Uncaught Exception:', err)
+})
+process.on('unhandledRejection', err => {
+	console.error('❌ Unhandled Rejection:', err)
 })
