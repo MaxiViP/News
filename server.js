@@ -1,2 +1,2 @@
-// // server.js
-// import('./backend/dist/server/index.js')
+// server.js
+import('./backend/dist/server/index.js')
