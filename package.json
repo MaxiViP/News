@@ -10,7 +10,7 @@
 		"lint": "npm run lint -w frontend",
 		"typecheck": "npm run typecheck -w frontend",
 		"build": "npm run build -w backend && npm run build -w frontend",
-		"start": "npm start -w backend"
+		"start": "pm2 start ./backend/dist/server/index.js --no-daemon"
 	},
 	"devDependencies": {
 		"concurrently": "^9.0.0"
