@@ -5,21 +5,22 @@ import { apiRouter } from './routes/index.js'
 
 const app = express()
 
-// ✅ CORS (пока можно разрешить всем, чтобы проверить)
+// CORS (для теста пока разрешим всем)
 app.use(cors({ origin: '*' }))
 
-// ✅ API endpoints
+// API
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 app.use('/api', apiRouter)
 
-// ✅ PORT (берём из переменной окружения, fallback 8080)
+// PORT (берём из окружения)
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8080
 
+// Запуск (обязательно 0.0.0.0 для Timeweb)
 app.listen(PORT, '0.0.0.0', () => {
-	console.log(`✅ API Server running on http://0.0.0.0:${PORT}`)
+	console.log(`✅ API running on http://0.0.0.0:${PORT}`)
 })
 
-// ✅ Глобальные обработчики ошибок
+// Глобальный catch
 process.on('uncaughtException', err => {
 	console.error('❌ Uncaught Exception:', err)
 })
