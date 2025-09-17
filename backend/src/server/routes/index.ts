@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { newsHandler } from './handlers/news.js'
+import { newsHandler } from './handlers/news'
 
 export const apiRouter = Router()
 
