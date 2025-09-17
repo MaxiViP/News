@@ -1,7 +1,8 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
-import { apiRouter } from './routes/index'
+
+import { apiRouter } from './routes/index.js' 
 
 const app = express()
 

@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
 import { z } from 'zod'
-import { fetchFromProviders } from '../../providers/index.js'
-import { cache } from '../../core/cache.js'
+import { fetchFromProviders } from '../../../providers/index.js'
+import { cache } from '../../../core/cache.js'
 
 const QuerySchema = z.object({
 	category: z.enum(['politics', 'economy', 'showbiz', 'science', 'tech', 'sports', 'incidents', 'auto', 'esports']),
