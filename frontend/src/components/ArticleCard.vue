@@ -1,26 +1,32 @@
 <template>
-  <article class="card">
-    <div class="media">
-      <img v-if="a.imageUrl" :src="a.imageUrl" :alt="a.title" loading="lazy" />
-      <div v-else class="ph"></div>
-    </div>
-
-    <div class="body">
-      <h3 class="title">
-        <a :href="a.url" target="_blank" rel="noopener">{{ a.title }}</a>
-      </h3>
-      <p v-if="a.summary" class="summary">{{ a.summary }}</p>
-      <div class="meta">
-        <span class="src">{{ a.source?.name }}</span>
-        <span>{{ new Date(a.publishedAt).toLocaleString() }}</span>
+  <a
+    :href="a.url"
+    target="_blank"
+    rel="noopener"
+    class="card block no-underline text-inherit"
+  >
+    <article>
+      <div class="media">
+        <img v-if="a.imageUrl" :src="a.imageUrl" :alt="a.title" loading="lazy" />
+        <div v-else class="ph"></div>
       </div>
-    </div>
-  </article>
+
+      <div class="body">
+        <h3 class="title">{{ a.title }}</h3>
+        <p v-if="a.summary" class="summary">{{ a.summary }}</p>
+        <div class="meta">
+          <span class="src">{{ a.source?.name }}</span>
+          <span>{{ new Date(a.publishedAt).toLocaleString() }}</span>
+        </div>
+      </div>
+    </article>
+  </a>
 </template>
 
 <script setup lang="ts">
 defineProps<{ a: any }>()
 </script>
+
 
 <style scoped>
 .card {
