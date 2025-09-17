@@ -1,11 +1,14 @@
-import 'dotenv/config'
+import dotenv from 'dotenv'
 import express from 'express'
 import cors from 'cors'
 import { apiRouter } from './routes/index.js'
 
+// Загружаем именно .env.production
+dotenv.config({ path: '.env.production' })
+
 const app = express()
 
-// --- CORS (разрешаем фронт с домена timeweb)
+// --- CORS
 const allowed = (process.env.CORS_ORIGIN ?? '').split(',').filter(Boolean)
 app.use(
 	cors({
@@ -19,11 +22,10 @@ app.use(
 	})
 )
 
-// --- API endpoints
+// --- API
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 app.use('/api', apiRouter)
 
-// --- PORT
 const PORT = Number(process.env.PORT) || 8080
 app.listen(PORT, '0.0.0.0', () => {
 	console.log(`✅ API server running on http://0.0.0.0:${PORT}`)
