@@ -2,42 +2,41 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import path from 'path'
-import { fileURLToPath } from 'url'
 import { apiRouter } from './routes/index.js'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const app = express()
 
-// ✅ CORS (для разработки, можно убрать в продакшене если фронт и бэк на одном домене)
+// ✅ CORS (ограничения по доменам, можно убрать в продакшене если фронт и бэк вместе)
 const allowed = (process.env.CORS_ORIGIN ?? '').split(',')
-app.use(cors({
-  origin(origin, cb) {
-    if (!origin) return cb(null, true)
-    if (allowed.includes(origin)) return cb(null, true)
-    return cb(new Error(`CORS: ${origin} not allowed`))
-  },
-  credentials: false,
-  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization'],
-}))
+app.use(
+	cors({
+		origin(origin, cb) {
+			if (!origin) return cb(null, true)
+			if (allowed.includes(origin)) return cb(null, true)
+			return cb(new Error(`CORS: ${origin} not allowed`))
+		},
+		credentials: false,
+		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
+	})
+)
 
-// ✅ API
+// ✅ API endpoints
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 app.use('/api', apiRouter)
 
-// ✅ Раздаём собранный фронт
-const distPath = path.join(__dirname, '../frontend/dist')
+// ✅ Путь до собранного фронта (dist)
+const distPath = path.resolve(__dirname, '../../frontend/dist')
 app.use(express.static(distPath))
 
-// ✅ SPA-fallback (чтобы работали /category/... и любые роуты Vue)
+// ✅ SPA fallback (Vue router)
 app.use((_req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'))
+	res.sendFile(path.join(distPath, 'index.html'))
 })
 
+// ✅ Запуск
+const PORT = Number(process.env.PORT) || 8080
 
-const PORT = Number(process.env.PORT ?? 8080)
-app.listen(PORT, () => {
-  console.log(`✅ Backend + Frontend listening on http://localhost:${PORT}`)
+app.listen(PORT, '0.0.0.0', () => {
+	console.log(`✅ Server listening on http://0.0.0.0:${PORT}`)
 })
