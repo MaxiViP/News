@@ -1,12 +1,15 @@
+// backend/src/server/index.ts
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import path from 'path'
+import fs from 'fs'
 import { apiRouter } from './routes/index.js'
+import { logger } from '../utils/logger.js'
 
 const app = express()
 
-// ✅ CORS (ограничиваем при необходимости)
+// CORS
 const allowed = (process.env.CORS_ORIGIN ?? '').split(',').filter(Boolean)
 app.use(
 	cors({
@@ -20,29 +23,26 @@ app.use(
 	})
 )
 
-// ✅ API
+// API
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 app.use('/api', apiRouter)
 
-// ✅ Раздаём фронт (dist из frontend)
+// Статические файлы фронтенда
 const distPath = path.resolve(process.cwd(), 'frontend/dist')
-app.use(express.static(distPath))
+if (fs.existsSync(distPath)) {
+	app.use(express.static(distPath))
+	// SPA fallback
+	app.use((_req, res) => {
+		res.sendFile(path.join(distPath, 'index.html'))
+	})
+} else {
+	logger.warn(`Frontend dist not found at ${distPath}`)
+}
 
-// ✅ SPA fallback (Vue Router history mode)
-app.use((_req, res) => {
-	res.sendFile(path.join(distPath, 'index.html'))
-})
-
-// ✅ PORT (0.0.0.0 важно для контейнеров Timeweb)
+// Порт
 const PORT = Number(process.env.PORT) || 8080
 app.listen(PORT, '0.0.0.0', () => {
-	console.log(`✅ Server running on http://0.0.0.0:${PORT}`)
+	logger.info(`✅ Server running on http://0.0.0.0:${PORT}`)
 })
 
-// ✅ Глобальный catch
-process.on('uncaughtException', err => {
-	console.error('❌ Uncaught Exception:', err)
-})
-process.on('unhandledRejection', err => {
-	console.error('❌ Unhandled Rejection:', err)
-})
+ 
