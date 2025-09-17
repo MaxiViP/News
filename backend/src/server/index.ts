@@ -25,7 +25,7 @@ app.get('/api/health', (_req, res) => res.json({ ok: true }))
 app.use('/api', apiRouter)
 
 // ✅ Раздаём фронт (dist из frontend)
-const distPath = path.resolve(process.cwd(), 'frontend/dist')
+const distPath = path.resolve(process.cwd(), '../frontend/dist')
 app.use(express.static(distPath))
 
 // ✅ SPA fallback (Vue Router history mode)
