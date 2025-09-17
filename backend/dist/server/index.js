@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+// ✅ обязательно указываем .js, чтобы tsc под NodeNext не ругался
 import { apiRouter } from './routes/index.js';
 const app = express();
 // --- CORS (разрешаем фронт с домена timeweb)
