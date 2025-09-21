@@ -187,16 +187,25 @@ function closeMenu() {
   top: 100%;
   right: -15px;
   margin-top: 15px;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   min-width: 180px;
-  z-index: 9999;
+  z-index: 100;
   padding: 8px 0;
   transition: background 0.3s ease, color 0.3s ease;
+  
+  /* фон под тему */
+  background: #fff; /* светлая тема */
 }
+
+html.dark .menu {
+  background: #1f2937; /* gray-800 для тёмной темы */
+  border-color: #374151; /* чуть темнее бордер */
+}
+
 .menu a {
   padding: 10px 16px;
   text-decoration: none;
