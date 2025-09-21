@@ -22,7 +22,7 @@
 								</text>
 							</svg>
 						</span>
-						<span>News and News</span>
+						<span class="logo-text">News and News</span>
 					</RouterLink>
 				</h1>
 
@@ -183,42 +183,44 @@ function closeMenu() {
 
 /* меню */
 .menu {
-  position: absolute;
-  top: 100%;
-  right: -15px;
-  margin-top: 15px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  min-width: 180px;
-  z-index: 100;
-  padding: 8px 0;
-  transition: background 0.3s ease, color 0.3s ease;
-  
-  /* фон под тему */
-  background: #fff; /* светлая тема */
+	position: absolute;
+	top: 100%;
+	right: -15px;
+	margin-top: 15px;
+	border: 2px solid #ddd;
+	border-radius: 8px;
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	min-width: 180px;
+	z-index: 100;
+	padding: 8px 0;
+	transition:
+		background 0.3s ease,
+		color 0.3s ease;
+
+	/* фон под тему */
+	background: #fff; /* светлая тема */
 }
 
 html.dark .menu {
-  background: #1f2937; /* gray-800 для тёмной темы */
-  border-color: #374151; /* чуть темнее бордер */
+	background: #1f2937; /* gray-800 для тёмной темы */
+	border-color: #374151; /* чуть темнее бордер */
 }
 
 .menu a {
-  padding: 10px 16px;
-  text-decoration: none;
-  display: block;
-  transition: background 0.2s;
+	padding: 10px 16px;
+	text-decoration: none;
+	display: block;
+	transition: background 0.2s;
 }
 .menu a:hover {
-  background: rgba(37, 99, 235, 0.08); /* нейтральный hover */
+	background: rgba(37, 99, 235, 0.08); /* нейтральный hover */
 }
 .menu hr {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 6px 0;
+	border: none;
+	border-top: 1px solid #ddd;
+	margin: 6px 0;
 }
 
 /* анимация меню */
@@ -257,11 +259,11 @@ html.dark .menu {
 	transform: translateY(1px);
 }
 
-/* @media (max-width: 600px) {
-	.menu {
-		z-index:1000 ; 
+@media (max-width: 600px) {
+	.logo-text {
+		width: 30px;
 	}
-} */
+}
 
 @media (max-width: 900px) {
 	.search {
