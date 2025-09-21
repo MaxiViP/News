@@ -183,7 +183,7 @@ function closeMenu() {
 
 /* меню */
 .menu {
-  position: fixed;
+  position: absolute;
   top: 100%;
   right: -15px;
   margin-top: 15px;
