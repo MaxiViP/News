@@ -6,10 +6,7 @@ import type { Article, Category } from '../core/types.js'
 
 /** Карта лент по категориям (UTF-8 ленты) */
 const FEEDS: Record<Category, string[]> = {
-	politics: [
-		'https://ria.ru/export/rss2/politics/index.xml',
-		'https://www.mk.ru/rss/politics/index.xml',
-	],
+	politics: ['https://ria.ru/export/rss2/politics/index.xml', 'https://www.mk.ru/rss/politics/index.xml'],
 	economy: [
 		'https://ria.ru/export/rss2/economy/index.xml',
 		'https://rssexport.rbc.ru/rbcnews/economics/20/full.rss',
@@ -23,6 +20,7 @@ const FEEDS: Record<Category, string[]> = {
 		'https://iz.ru/xml/rss/all.xml ',
 		'https://rssexport.rbc.ru/rbcnews/news/30/full.rss',
 		'http://www.infox.ru/themes/auto/rss.xml',
+		'https://www.mk.ru/rss/news/index.xml',
 	],
 	science: [
 		'https://ria.ru/export/rss2/science/index.xml',

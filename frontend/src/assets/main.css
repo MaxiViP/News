@@ -1,5 +1,13 @@
 @import "tailwindcss";
- 
-/* @plugin "@tailwindcss/typography";
-@plugin "@tailwindcss/forms";
-@plugin "@tailwindcss/line-clamp"; */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* html {
+  @apply bg-white text-black;
+} */
+
+html.dark {
+  @apply bg-gray-900 text-white;
+}
