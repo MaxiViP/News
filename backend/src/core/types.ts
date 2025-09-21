@@ -1,7 +1,7 @@
 export type Category =
   | 'politics'
   | 'economy'
-  | 'showbiz'
+  | 'news'
   | 'science'
   | 'tech'
   | 'sports'

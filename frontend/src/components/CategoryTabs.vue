@@ -16,7 +16,7 @@
 const cats = [
   { key: 'politics', label: 'Политика' },
   { key: 'economy',  label: 'Экономика' },
-  { key: 'showbiz',  label: 'Шоу-бизнес' },
+  { key: 'news',  label: 'Новости' },
   { key: 'science',  label: 'Наука' },
   { key: 'tech',     label: 'Технологии' },
   { key: 'sports',   label: 'Спорт' },

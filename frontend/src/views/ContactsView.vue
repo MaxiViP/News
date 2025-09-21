@@ -5,7 +5,7 @@
     <section>
       <h2>Редакция</h2>
       <p>Email: <a href="batti@ya.ru">batti@ya.ru</a></p>
-      <p>Телефон: <a href="tel:+79991234567">+7 (905) 7353580</a></p>
+      <p>Телефон: <a href="tel:+79057353580">+7 (905) 7353580</a></p>
     </section>
 
     <section>
