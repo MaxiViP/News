@@ -181,32 +181,32 @@ function closeMenu() {
 	transform: translateY(-7.5px) rotate(-45deg);
 }
 
-/* меню */
 .menu {
-	position: absolute;
-	top: 100%;
-	right: -15px;
-	margin-top: 15px;
-	border: 2px solid #ddd;
-	border-radius: 8px;
-	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-	display: flex;
-	flex-direction: column;
-	min-width: 180px;
-	z-index: 100;
-	padding: 8px 0;
-	transition:
-		background 0.3s ease,
-		color 0.3s ease;
+  position: absolute;
+  top: 100%;
+  right: -15px;
+  margin-top: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  z-index: 100;
+  padding: 8px 0;
+  transition: background 0.3s ease, color 0.3s ease;
 
-	/* фон под тему */
-	background: #fff; /* светлая тема */
+  /* фон под тему */
+  background: #fff;
+  max-height: 70vh;   /* ограничим высоту */
+  overflow-y: auto;   /* добавляем скролл */
 }
 
 html.dark .menu {
-	background: #1f2937; /* gray-800 для тёмной темы */
-	border-color: #374151; /* чуть темнее бордер */
+  background: #1f2937; /* gray-800 */
+  border-color: #374151;
 }
+
 
 .menu a {
 	padding: 10px 16px;
