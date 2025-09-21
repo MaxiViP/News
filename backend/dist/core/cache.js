@@ -1,5 +1,4 @@
 import { env } from '../server/env.js';
-import * as IORedis from 'ioredis'; // ← namespace
 class MemoryCache {
     store = new Map();
     async get(key) {
@@ -17,8 +16,9 @@ class MemoryCache {
     }
 }
 class RedisCache {
-    r; // тип класса из namespace
+    r;
     constructor(url) {
+        const IORedis = require('ioredis'); // Динамический импорт
         this.r = new IORedis(url);
     }
     async get(key) {
@@ -29,6 +29,4 @@ class RedisCache {
         await this.r.setex(key, ttlSec, JSON.stringify(value));
     }
 }
-export const cache = env.CACHE_PROVIDER === 'redis' && env.REDIS_URL
-    ? new RedisCache(env.REDIS_URL)
-    : new MemoryCache();
+export const cache = env.CACHE_PROVIDER === 'redis' && env.REDIS_URL ? new RedisCache(env.REDIS_URL) : new MemoryCache();

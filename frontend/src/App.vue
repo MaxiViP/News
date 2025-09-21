@@ -1,10 +1,9 @@
 <template>
-	<div id="container" class="mx-auto max-w-6xl px-4 sm:px-6 ">
+	<div id="container" class="mx-auto max-w-6xl px-4 sm:px-6">
 		<header class="glass">
 			<div class="bar">
 				<!-- логотип -->
 				<h1 class="logo">
-				
 					<RouterLink to="/">
 						<span class="logo-icon" aria-hidden="true">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
@@ -29,12 +28,43 @@
 
 				<!-- блок справа -->
 				<div class="right">
-          	<DarkToggle />
-					<RouterLink to="/contacts" class="contacts-link">Контакты</RouterLink>
+					<CurrencyRates />
+					<DarkToggle />
+
 					<form class="search" @submit.prevent="$router.push('/search/' + (q || ''))">
 						<input v-model="q" type="search" placeholder="Поиск по новостям..." />
 						<button>Искать</button>
 					</form>
+
+					<!-- бургер -->
+					<div class="burger" :class="{ open: menuOpen }" @click="menuOpen = !menuOpen">
+						<span></span><span></span><span></span>
+					</div>
+
+					<!-- выпадающее меню -->
+					<transition name="fade">
+						<div v-if="menuOpen" class="menu">
+							<RouterLink to="/contacts" @click="closeMenu">📞 Контакты</RouterLink>
+							<RouterLink to="/currency" @click="closeMenu">💱 Курсы валют</RouterLink>
+
+							<hr />
+
+							<RouterLink to="/category/politics" @click="closeMenu">Политика</RouterLink>
+							<RouterLink to="/category/economy" @click="closeMenu">Экономика</RouterLink>
+							<RouterLink to="/category/auto" @click="closeMenu">Авто</RouterLink>
+							<RouterLink to="/category/sports" @click="closeMenu">Спорт</RouterLink>
+							<RouterLink to="/category/news" @click="closeMenu">Новости</RouterLink>
+							<RouterLink to="/category/science" @click="closeMenu">Наука</RouterLink
+							><RouterLink to="/category/tech" @click="closeMenu">Технологии</RouterLink
+							><RouterLink to="/category/incidents" @click="closeMenu">Происшествия</RouterLink
+							><RouterLink to="/category/esports" @click="closeMenu">Киберспорт</RouterLink>
+							<hr />
+
+							<a href="#" target="_blank">📢 Telegram</a>
+							<a href="#" target="_blank">👥 ВКонтакте</a>
+							<a href="#" target="_blank">💬 Max</a>
+						</div>
+					</transition>
 				</div>
 			</div>
 		</header>
@@ -46,9 +76,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DarkToggle from './components/DarkToggle.vue'
+import CurrencyRates from './components/CurrencyRates.vue'
 
 const q = ref('')
+const menuOpen = ref(false)
 
+function closeMenu() {
+	menuOpen.value = false
+}
 </script>
 
 <style scoped>
@@ -108,23 +143,87 @@ const q = ref('')
 	display: block;
 }
 
-/* правая часть (контакты + поиск) */
+/* правая часть */
 .right {
 	margin-left: auto;
 	display: flex;
 	align-items: center;
 	gap: 20px;
+	position: relative;
 }
 
-.contacts-link {
-	font-weight: 600;
-	color: #2563eb;
-	text-decoration: none;
+/* бургер */
+.burger {
+	width: 24px;
+	height: 18px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	cursor: pointer;
 }
-.contacts-link:hover {
-	text-decoration: underline;
+.burger span {
+	display: block;
+	height: 3px;
+	width: 100%;
+	background: #333;
+	border-radius: 2px;
+	transition: 0.3s;
 }
 
+/* анимация в крестик */
+.burger.open span:nth-child(1) {
+	transform: translateY(7.5px) rotate(45deg);
+}
+.burger.open span:nth-child(2) {
+	opacity: 0;
+}
+.burger.open span:nth-child(3) {
+	transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* меню */
+.menu {
+  position: fixed;
+  top: 100%;
+  right: -15px;
+  margin-top: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  z-index: 9999;
+  padding: 8px 0;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.menu a {
+  padding: 10px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background 0.2s;
+}
+.menu a:hover {
+  background: rgba(37, 99, 235, 0.08); /* нейтральный hover */
+}
+.menu hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 6px 0;
+}
+
+/* анимация меню */
+.fade-enter-active,
+.fade-leave-active {
+	transition: all 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+	transform: translateY(-5px);
+}
+
+/* поиск */
 .search {
 	display: flex;
 	gap: 8px;
@@ -149,7 +248,13 @@ const q = ref('')
 	transform: translateY(1px);
 }
 
-@media (max-width: 640px) {
+/* @media (max-width: 600px) {
+	.menu {
+		z-index:1000 ; 
+	}
+} */
+
+@media (max-width: 900px) {
 	.search {
 		display: none;
 	}

@@ -1,5 +1,4 @@
 import { fetchRss } from './rss.js';
-import { fetchNewsApi } from './newsapi.js';
 export async function fetchFromProviders(opts) {
     const seen = new Set();
     const uniq = (arr) => arr.filter(x => {
@@ -16,16 +15,14 @@ export async function fetchFromProviders(opts) {
             return uniq(rss);
     }
     // 2) Запасной вариант — NewsAPI (если ключ есть и не упёрлись в лимит)
-    try {
-        const a = await fetchNewsApi({
-            category: opts.category,
-            country: (opts.country ?? 'ru'),
-            page: opts.page,
-            q: opts.q
-        });
-        if (a.length)
-            return uniq(a);
-    }
-    catch { }
+    // try {
+    //   const a = await fetchNewsApi({
+    //     category: opts.category,
+    //     country: (opts.country ?? 'ru') as any,
+    //     page: opts.page,
+    //     q: opts.q
+    //   } as any)
+    //   if (a.length) return uniq(a)
+    // } catch {}
     return [];
 }

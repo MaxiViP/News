@@ -4,17 +4,51 @@ import * as iconv from 'iconv-lite';
 import { normalize } from '../core/normalize.js';
 /** Карта лент по категориям (UTF-8 ленты) */
 const FEEDS = {
-    politics: [
-        'https://ria.ru/export/rss2/politics/index.xml',
-        'https://lenta.ru/rss', // общий — пригодится как подстраховка
+    politics: ['https://ria.ru/export/rss2/politics/index.xml', 'https://www.mk.ru/rss/politics/index.xml'],
+    economy: [
+        'https://ria.ru/export/rss2/economy/index.xml',
+        'https://rssexport.rbc.ru/rbcnews/economics/20/full.rss',
+        'https://govoritmoskva.ru/rss/news/2/',
+        'https://www.mk.ru/rss/economics/index.xml',
     ],
-    economy: ['https://ria.ru/export/rss2/economy/index.xml', 'https://rssexport.rbc.ru/rbcnews/economics/20/full.rss'],
-    showbiz: ['https://ria.ru/export/rss2/culture/index.xml', 'https://lenta.ru/rss'],
-    science: ['https://ria.ru/export/rss2/science/index.xml'],
-    tech: ['https://habr.com/ru/rss/news/?fl=ru', 'https://lenta.ru/rss'],
-    sports: ['https://rsport.ria.ru/export/rss2/archive/index.xml', 'https://rssexport.rbc.ru/rbcnews/sport/20/full.rss'],
-    incidents: ['https://ria.ru/export/rss2/incidents/index.xml', 'https://lenta.ru/rss'],
-    auto: ['https://rssexport.rbc.ru/rbcnews/news/30/full.rss', 'https://rssexport.rbc.ru/rbcnews/auto/20/full.rss'],
+    news: [
+        'https://ria.ru/export/rss2/culture/index.xml',
+        'https://news.rambler.ru/starlife/',
+        'https://lenta.ru/rss',
+        'https://iz.ru/xml/rss/all.xml ',
+        'https://rssexport.rbc.ru/rbcnews/news/30/full.rss',
+        'http://www.infox.ru/themes/auto/rss.xml',
+        'https://www.mk.ru/rss/news/index.xml',
+    ],
+    science: [
+        'https://ria.ru/export/rss2/science/index.xml',
+        'https://www.mk.ru/rss/science/index.xml',
+        'https://govoritmoskva.ru/rss/news/23/',
+    ],
+    tech: ['https://habr.com/ru/rss/news/?fl=ru', 'https://govoritmoskva.ru/rss/news/5/'],
+    sports: [
+        'https://rsport.ria.ru/export/rss2/archive/index.xml',
+        'https://rssexport.rbc.ru/rbcnews/sport/20/full.rss',
+        'https://govoritmoskva.ru/rss/news/10/',
+        'https://www.mk.ru/rss/sport/index.xml',
+    ],
+    incidents: [
+        'https://ria.ru/export/rss2/incidents/index.xml',
+        'https://www.mk.ru/rss/incident/index.xml',
+        'https://govoritmoskva.ru/rss/news/7/',
+        // 'https://lenta.ru/rss',
+        // 'https://lenta.ru/rss',
+        // 'https://lenta.ru/rss',
+        // 'https://lenta.ru/rss',
+        // 'https://lenta.ru/rss',
+        // 'https://lenta.ru/rss',
+    ],
+    auto: [
+        'https://news-rss.ru/katalog-rss-kanalov/avto/',
+        ' http://www.gazeta.ru/export/rss/autonews.xml',
+        'https://www.autostat.ru/news/rss/3/',
+        ' http://www.gazeta.ru/export/rss/auto.xml',
+    ],
     esports: [
         'https://www.goha.ru/feeds/rss',
         'cyber.sports.ru/docs/rss',

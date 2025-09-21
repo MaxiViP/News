@@ -1,30 +1,29 @@
 <template>
-  <div class="contacts-page">
-    <h1>Контакты</h1>
+	<div class="contacts-page">
+		<h1>Контакты</h1>
 
-    <section>
-      <h2>Редакция</h2>
-      <p>Email: <a href="batti@ya.ru">batti@ya.ru</a></p>
-      <p>Телефон: <a href="tel:+79057353580">+7 (905) 7353580</a></p>
-    </section>
+		<section>
+			<h2>Редакция</h2>
+			<p>Email: <a href="batti@ya.ru">batti@ya.ru</a></p>
+			<p>Телефон: <a href="tel:+79057353580">+7 (905) 7353580</a></p>
+		</section>
 
-    <section>
-      <h2>Реклама и партнёрство</h2>
-      <p>Email: <a href="batti@ya.ru">batti@ya.ru</a></p>
-    </section>
+		<section>
+			<h2>Реклама и партнёрство</h2>
+			<p>Email: <a href="batti@ya.ru">batti@ya.ru</a></p>
+		</section>
 
-    <section>
-      <h2>Мы в соцсетях</h2>
-      <ul>
-        <li><a href="#" target="_blank">Telegram</a></li>
-        <li><a href="#" target="_blank">ВКонтакте</a></li>
-      </ul>
-    </section>
-  </div>
+		<section>
+			<h2>Мы в соцсетях</h2>
+			<ul>
+				<li><a href="#" target="_blank">Telegram</a></li>
+				<li><a href="#" target="_blank">ВКонтакте</a></li>
+			</ul>
+		</section>
+	</div>
 </template>
 
 <script setup lang="ts">
-// тут логика не нужна, статическая страница
 </script>
 
 <style scoped>
@@ -62,10 +61,11 @@ h2::after {
   border-radius: 2px;
 }
 
-p, li {
+p,
+li {
   margin: 8px 0;
   font-size: 16px;
-  color: #374151;
+  color: #374151; /* светлая тема */
 }
 
 ul {
@@ -102,22 +102,43 @@ ul li a:active::after {
   width: 100%;
 }
 
-ul li a:hover {
-  color: #1d4ed8;
+/* --- ТЕМНАЯ ТЕМА --- */
+html.dark h1,
+html.dark h2 {
+  color: #60a5fa; /* голубой */
 }
 
-ul li a:focus {
-  outline: none;
-  color: #1e40af;
+html.dark p,
+html.dark li {
+  color: #d1d5db; /* светло-серый (Tailwind gray-300) */
 }
 
-ul li a:active {
-  color: #dc2626;
+html.dark ul li a {
+  color: #3b82f6; /* яркий голубой */
+}
+
+html.dark ul li a:hover {
+  color: #60a5fa;
+}
+
+html.dark ul li a::after {
+  background: #3b82f6;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+/* @media (max-width: 600px) {
+	.contacts-page {
+		z-index:1 ; 
+	}
+} */
 </style>
 

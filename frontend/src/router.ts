@@ -5,7 +5,8 @@ const routes = [
 	{ path: '/', redirect: '/category/politics' },
 	{ path: '/category/:category', component: CategoryView },
 	{ path: '/search/:q?', component: () => import('./views/SearchView.vue') },
-	{ path: '/contacts', component: () => import('./views/ContactsView.vue') }, // ✅ добавили
+	{ path: '/contacts', component: () => import('./views/ContactsView.vue') },
+	{ path: '/currency', component: () => import('./views/CurrencyPage.vue') },
 ]
 
 export default createRouter({
