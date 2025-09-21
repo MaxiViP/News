@@ -115,7 +115,7 @@ function closeMenu() {
 
 .logo {
 	margin: 0;
-	font-size: 18px;
+	font-size: 26px;
 	font-weight: 600;
 	letter-spacing: -0.02em;
 }
@@ -263,6 +263,9 @@ html.dark .menu {
 	.logo-text {
 		width: 30px;
 	}
+  .logo {
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 900px) {
