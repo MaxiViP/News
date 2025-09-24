@@ -82,7 +82,7 @@
 		<!-- 📈 График BTC -->
 		<section class="p-6 rounded-xl shadow-lg bg-white dark:bg-gray-800 transition-all duration-300">
 			<h2 class="text-xl font-semibold mb-4">Курс BTC/RUB (30 дней)</h2>
-			<canvas ref="btcChart" class="w-full h-64"></canvas>
+			<canvas ref="btcChart" class="w-full h-56"></canvas>
 		</section>
 
 		<!-- 📊 Фиат -->
@@ -257,7 +257,15 @@ async function loadBtcChart() {
 		const prices = data.prices.map((p: any) => p[1])
 
 		if (btcChart.value) {
-			new Chart(btcChart.value, {
+			const ctx = btcChart.value.getContext('2d')
+			if (!ctx) return
+
+			// 🎨 Градиентная заливка
+			const gradient = ctx.createLinearGradient(0, 0, 0, 400)
+			gradient.addColorStop(0, 'rgba(37,99,235,0.4)') // яркий синий
+			gradient.addColorStop(1, 'rgba(37,99,235,0)') // прозрачный
+
+			new Chart(ctx, {
 				type: 'line',
 				data: {
 					labels,
@@ -266,15 +274,54 @@ async function loadBtcChart() {
 							label: 'BTC/RUB',
 							data: prices,
 							borderColor: '#2563eb',
-							backgroundColor: 'rgba(37,99,235,0.3)',
-							tension: 0.2,
+							backgroundColor: gradient,
+							tension: 0.4, // более плавная линия
+							pointRadius: 3,
+							pointHoverRadius: 6,
+							pointBackgroundColor: '#2563eb',
 							fill: true,
 						},
 					],
 				},
 				options: {
 					responsive: true,
-					plugins: { legend: { display: false } },
+					plugins: {
+						legend: { display: false },
+						tooltip: {
+							backgroundColor: '#1e293b',
+							titleColor: '#fff',
+							bodyColor: '#e2e8f0',
+							displayColors: false,
+							callbacks: {
+								label: ctx =>
+									new Intl.NumberFormat('ru-RU', {
+										style: 'currency',
+										currency: 'RUB',
+										maximumFractionDigits: 0,
+									}).format(ctx.raw as number),
+							},
+						},
+					},
+					scales: {
+						x: {
+							grid: { display: false },
+							ticks: { maxTicksLimit: 6 },
+						},
+						y: {
+							grid: { color: 'rgba(0,0,0,0.05)' },
+							ticks: {
+								callback: value =>
+									new Intl.NumberFormat('ru-RU', {
+										notation: 'compact',
+										maximumFractionDigits: 1,
+									}).format(value as number) + '₽',
+							},
+						},
+					},
+					animation: {
+						duration: 1200,
+						easing: 'easeOutQuart',
+					},
 				},
 			})
 		}
