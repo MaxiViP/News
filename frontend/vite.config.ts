@@ -5,6 +5,7 @@ import autoprefixer from 'autoprefixer'
 
 export default defineConfig({
   plugins: [vue()],
+  
   css: {
     postcss: {
       plugins: [tailwind(), autoprefixer()]
