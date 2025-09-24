@@ -107,7 +107,8 @@
 
 			<!-- 📢 Бегущая строка -->
 			<div class="overflow-hidden">
-				<div class="inline-flex animate-marquee gap-6" :style="{ animationDuration: marqueeDuration }">
+        
+				<div  class="inline-flex animate-marquee gap-6" :style="{ animationDuration: marqueeDuration }">
 					<div
 						v-for="match in filteredMatches"
 						:key="match.id"
