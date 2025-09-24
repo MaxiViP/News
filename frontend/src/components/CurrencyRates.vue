@@ -36,5 +36,8 @@ onMounted(loadRates)
 <style scoped>
 .currency-rates {
 	line-height: 1.4;
+	padding: 0.5rem 1rem;
+	border: 1px solid #e5e7eb;;
+	border-radius: 12px;
 }
 </style>

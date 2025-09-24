@@ -18,9 +18,13 @@ const { isDark, toggle } = useDark()
 </script>
 
 <style>
+	.p900 {
+		display: none;
+	}
+
 .dark-toggle {
 	cursor: pointer;
-	padding: 0.5rem 1rem;
+	padding: 0.5rem 0.5 rem;
 	border-radius: 6px;
 	border: 1px solid var(--c-border, #ccc);
 	background: var(--c-bg, #f9f9f9);

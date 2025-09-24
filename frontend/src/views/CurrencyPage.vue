@@ -7,9 +7,10 @@
 			<div class="flex flex-col sm:flex-row gap-4 items-center animate-fade-in">
 				<!-- ввод суммы -->
 				<input
-					v-model.number="amount"
-					type="number"
-					min="0"
+					:value="formattedAmount"
+					@input="onAmountInput"
+					inputmode="numeric"
+					pattern="[0-9]*"
 					class="border px-3 py-2 rounded-lg w-full sm:w-40 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
 				/>
 
@@ -21,7 +22,6 @@
 								<template v-if="flags[c]?.startsWith('data:image/svg')">
 									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
 								</template>
-								<template v-else>{{ flags[c] }}</template>
 								{{ c }}
 							</span>
 						</option>
@@ -32,7 +32,6 @@
 								<template v-if="flags[c]?.startsWith('data:image/svg')">
 									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
 								</template>
-								<template v-else>{{ flags[c] }}</template>
 								{{ c }}
 							</span>
 						</option>
@@ -50,7 +49,6 @@
 								<template v-if="flags[c]?.startsWith('data:image/svg')">
 									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
 								</template>
-								<template v-else>{{ flags[c] }}</template>
 								{{ c }}
 							</span>
 						</option>
@@ -61,7 +59,6 @@
 								<template v-if="flags[c]?.startsWith('data:image/svg')">
 									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
 								</template>
-								<template v-else>{{ flags[c] }}</template>
 								{{ c }}
 							</span>
 						</option>
@@ -72,7 +69,7 @@
 			<!-- результат -->
 			<transition name="fade">
 				<div v-if="converted" class="mt-6 text-xl font-semibold text-gray-900 dark:text-gray-100 animate-bounce-in">
-					{{ amount }} {{ from }} =
+					{{ formattedAmount }} {{ from }} =
 					<span class="text-blue-600 dark:text-blue-400">{{ converted }}</span>
 					{{ to }}
 				</div>
@@ -80,8 +77,8 @@
 		</section>
 
 		<!-- 📈 График BTC -->
-		<section class="p-6 rounded-xl shadow-lg bg-white dark:bg-gray-800 transition-all duration-300">
-			<h2 class="text-xl font-semibold mb-4">Курс BTC/RUB (30 дней)</h2>
+		<section class="p-4 rounded-xl shadow-lg bg-white dark:bg-gray-800 transition-all duration-300">
+			<h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Курс BTC/RUB (15 дней)</h2>
 			<canvas ref="btcChart" class="w-full h-56"></canvas>
 		</section>
 
@@ -251,31 +248,49 @@ async function loadCrypto() {
 // 📈 График BTC/RUB
 async function loadBtcChart() {
 	try {
-		const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=rub&days=30')
+		const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=rub&days=15')
 		const data = await res.json()
-		const labels = data.prices.map((p: any) => new Date(p[0]).toLocaleDateString('ru-RU'))
+
+		// Берём только 15 последних дней
+		const labels = data.prices.map((p: any) =>
+			new Date(p[0]).toLocaleDateString('ru-RU', {
+				day: '2-digit',
+				month: 'short', // 👈 короткое название месяца
+			})
+		)
 		const prices = data.prices.map((p: any) => p[1])
+
+		// группируем по дню
+		const dayMap: Record<string, number[]> = {}
+		labels.forEach((date, i) => {
+			if (!dayMap[date]) dayMap[date] = []
+			dayMap[date].push(prices[i])
+		})
+
+		// среднее значение по дню
+		const finalLabels = Object.keys(dayMap)
+		const finalPrices = finalLabels.map(day => dayMap[day].reduce((a, b) => a + b, 0) / dayMap[day].length)
 
 		if (btcChart.value) {
 			const ctx = btcChart.value.getContext('2d')
 			if (!ctx) return
 
-			// 🎨 Градиентная заливка
+			// 🎨 Градиент
 			const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-			gradient.addColorStop(0, 'rgba(37,99,235,0.4)') // яркий синий
-			gradient.addColorStop(1, 'rgba(37,99,235,0)') // прозрачный
+			gradient.addColorStop(0, 'rgba(37,99,235,0.4)')
+			gradient.addColorStop(1, 'rgba(37,99,235,0)')
 
 			new Chart(ctx, {
 				type: 'line',
 				data: {
-					labels,
+					labels: finalLabels, // 📅 теперь короткий формат дат
 					datasets: [
 						{
 							label: 'BTC/RUB',
-							data: prices,
+							data: finalPrices,
 							borderColor: '#2563eb',
 							backgroundColor: gradient,
-							tension: 0.4, // более плавная линия
+							tension: 0.4,
 							pointRadius: 3,
 							pointHoverRadius: 6,
 							pointBackgroundColor: '#2563eb',
@@ -305,7 +320,10 @@ async function loadBtcChart() {
 					scales: {
 						x: {
 							grid: { display: false },
-							ticks: { maxTicksLimit: 6 },
+							ticks: {
+								autoSkip: false, // показываем все даты
+								maxRotation: 0,
+							},
 						},
 						y: {
 							grid: { color: 'rgba(0,0,0,0.05)' },
@@ -319,7 +337,7 @@ async function loadBtcChart() {
 						},
 					},
 					animation: {
-						duration: 1200,
+						duration: 1000,
 						easing: 'easeOutQuart',
 					},
 				},
@@ -330,8 +348,18 @@ async function loadBtcChart() {
 	}
 }
 
+const amount = ref<number>(0)
+
+const formattedAmount = computed(() => new Intl.NumberFormat('ru-RU').format(amount.value))
+
+function onAmountInput(e: Event) {
+	const raw = (e.target as HTMLInputElement).value
+	// Оставляем только цифры
+	const numeric = raw.replace(/\D/g, '')
+	amount.value = Number(numeric || 0)
+}
+
 // --- Конвертер ---
-const amount = ref(1)
 const from = ref(localStorage.getItem('conv_from') || 'USD')
 const to = ref(localStorage.getItem('conv_to') || 'RUB')
 
