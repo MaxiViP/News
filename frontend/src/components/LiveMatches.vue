@@ -100,6 +100,9 @@
 			<div class="flex items-center mb-2">
 				<span class="text-red-500 animate-pulse text-sm font-bold">🔴 LIVE</span>
 				<span class="ml-2 text-xs text-gray-600 dark:text-gray-400">Обновлено: {{ lastUpdate }}</span>
+				<span class="ml-2 text-xs" :class="isDemoData ? 'text-orange-500' : 'text-blue-600 dark:text-blue-400'">
+					{{ currentSource }} {{ isDemoData ? '(демо)' : '' }}
+				</span>
 			</div>
 
 			<!-- 📢 Бегущая строка -->
@@ -111,6 +114,7 @@
 						:class="[
 							'match flex items-center gap-3 bg-white dark:bg-gray-800 shadow border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-lg hover:shadow-lg transition-shadow min-w-[320px]',
 							{ 'goal-flash': isGoal(match) },
+							{ 'demo-match': isDemoData },
 						]"
 					>
 						<!-- 🏆 Лига -->
@@ -182,7 +186,7 @@
 				</div>
 
 				<div class="mt-2 text-xs text-gray-600 dark:text-gray-400">
-					Матчей: {{ filteredMatches.length }} | Источник: {{ currentSource }}
+					Матчей: {{ filteredMatches.length }} | Источник: {{ currentSource }} {{ isDemoData ? '(демо)' : '' }}
 				</div>
 			</div>
 		</transition>
@@ -193,6 +197,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 
 const prevScores = ref<Record<number, string>>({})
+const isDemoData = ref(false) // 🔑 Флаг для определения демо-данных
 
 function isGoal(match: Match) {
 	const currentScore = `${match.goals.home}:${match.goals.away}`
@@ -333,14 +338,20 @@ async function loadFromApiFootball() {
 		if (!response.ok) throw new Error('API error')
 
 		const data = await response.json()
-		if (data.response) {
+		if (data.response && data.response.length > 0) {
 			matches.value = data.response
 			currentSource.value = 'API-Football (H2H)'
 			lastUpdate.value = new Date().toLocaleTimeString('ru-RU')
+			isDemoData.value = false // 🔑 Это настоящие данные
+			console.log(`✅ Загружено ${data.response.length} настоящих матчей`)
+			return true // 🔑 Успешно загрузили настоящие данные
+		} else {
+			console.log('ℹ️ API вернул пустой ответ')
+			return false // 🔑 Нет настоящих данных
 		}
 	} catch (error) {
-		console.warn('API-Football недоступен, пробуем запасные источники...')
-		await loadFromBackupSources()
+		console.warn('API-Football недоступен:', error)
+		return false // 🔑 Ошибка загрузки
 	}
 }
 
@@ -365,13 +376,13 @@ async function loadFromBackupSources() {
 		if (response.ok) {
 			const data = await response.json()
 
-			matches.value = data.matches
+			const liveMatches = data.matches
 				.filter((match: any) => match.status === 'LIVE' || match.status === 'IN_PLAY')
 				.map((match: any) => ({
 					id: match.id,
 					fixture: {
 						status: {
-							elapsed: match.minute || 0, // ✅ правильное поле для минуты матча
+							elapsed: match.minute || 0,
 							short: match.status || 'LIVE',
 						},
 					},
@@ -384,69 +395,83 @@ async function loadFromBackupSources() {
 						away: { name: match.awayTeam?.name || 'Away' },
 					},
 					goals: {
-						// ✅ В v4 для лайва доступны match.score.home и match.score.away
 						home: match.score?.home ?? 0,
 						away: match.score?.away ?? 0,
 					},
 				}))
 
-			currentSource.value = 'Football-Data.org'
-			lastUpdate.value = new Date().toLocaleTimeString('ru-RU')
+			if (liveMatches.length > 0) {
+				matches.value = liveMatches
+				currentSource.value = 'Football-Data.org'
+				lastUpdate.value = new Date().toLocaleTimeString('ru-RU')
+				isDemoData.value = false // 🔑 Это настоящие данные
+				console.log(`✅ Загружено ${liveMatches.length} настоящих матчей с Football-Data.org`)
+				return true // 🔑 Успешно загрузили настоящие данные
+			} else {
+				console.log('ℹ️ Нет активных матчей в Football-Data.org')
+				return false // 🔑 Нет настоящих данных
+			}
 		}
 	} catch (error) {
-		console.warn('⚠️ Запасные источники недоступны, используем демо-данные')
-		loadDemoData()
+		console.warn('⚠️ Football-Data.org недоступен:', error)
+		return false // 🔑 Ошибка загрузки
 	}
+	return false
 }
 
-// 📋 Демо-данные для тестирования
+// 📋 Демо-данные для тестирования (только если нет настоящих)
 function loadDemoData() {
-	matches.value = [
-		{
-			id: 1,
-			fixture: { status: { elapsed: 63, short: 'LIVE' } },
-			league: { name: 'Premier League', country: 'England' },
-			teams: { home: { name: 'Arsenal' }, away: { name: 'Chelsea' } },
-			goals: { home: 2, away: 1 },
-		},
-		{
-			id: 2,
-			fixture: { status: { elapsed: 45, short: 'LIVE' } },
-			league: { name: 'La Liga', country: 'Spain' },
-			teams: { home: { name: 'Real Madrid' }, away: { name: 'Barcelona' } },
-			goals: { home: 1, away: 0 },
-		},
-		{
-			id: 3,
-			fixture: { status: { elapsed: 78, short: 'LIVE' } },
-			league: { name: 'Russian Premier League', country: 'Russia' },
-			teams: { home: { name: 'Спартак' }, away: { name: 'Зенит' } },
-			goals: { home: 99, away: 1 },
-		},
-		{
-			id: 4,
-			fixture: { status: { elapsed: 63, short: 'LIVE' } },
-			league: { name: 'Premier League', country: 'England' },
-			teams: { home: { name: 'Manchester United' }, away: { name: 'Manchester City' } },
-			goals: { home: 0, away: 4 },
-		},
-		{
-			id: 5,
-			fixture: { status: { elapsed: 45, short: 'LIVE' } },
-			league: { name: 'La Liga', country: 'Spain' },
-			teams: { home: { name: 'Valencia' }, away: { name: 'Sevilla' } },
-			goals: { home: 3, away: 2 },
-		},
-		{
-			id: 6,
-			fixture: { status: { elapsed: 78, short: 'LIVE' } },
-			league: { name: 'Russian Premier League', country: 'Russia' },
-			teams: { home: { name: 'Цска' }, away: { name: 'Локомотив' } },
-			goals: { home: 0, away: 0 },
-		},
-	]
-	currentSource.value = 'Демо-данные'
-	lastUpdate.value = new Date().toLocaleTimeString('ru-RU')
+	// 🔑 Загружаем демо-данные только если флаг isDemoData true или нет других данных
+	if (matches.value.length === 0 || isDemoData.value) {
+		matches.value = [
+			{
+				id: 1,
+				fixture: { status: { elapsed: 63, short: 'LIVE' } },
+				league: { name: 'Premier League', country: 'England' },
+				teams: { home: { name: 'Arsenal' }, away: { name: 'Chelsea' } },
+				goals: { home: 2, away: 1 },
+			},
+			{
+				id: 2,
+				fixture: { status: { elapsed: 45, short: 'LIVE' } },
+				league: { name: 'La Liga', country: 'Spain' },
+				teams: { home: { name: 'Real Madrid' }, away: { name: 'Barcelona' } },
+				goals: { home: 1, away: 0 },
+			},
+			{
+				id: 3,
+				fixture: { status: { elapsed: 78, short: 'LIVE' } },
+				league: { name: 'Russian Premier League', country: 'Russia' },
+				teams: { home: { name: 'Спартак' }, away: { name: 'Зенит' } },
+				goals: { home: 99, away: 1 },
+			},
+			{
+				id: 4,
+				fixture: { status: { elapsed: 63, short: 'LIVE' } },
+				league: { name: 'Premier League', country: 'England' },
+				teams: { home: { name: 'Manchester United' }, away: { name: 'Manchester City' } },
+				goals: { home: 0, away: 4 },
+			},
+			{
+				id: 5,
+				fixture: { status: { elapsed: 45, short: 'LIVE' } },
+				league: { name: 'La Liga', country: 'Spain' },
+				teams: { home: { name: 'Valencia' }, away: { name: 'Sevilla' } },
+				goals: { home: 3, away: 2 },
+			},
+			{
+				id: 6,
+				fixture: { status: { elapsed: 78, short: 'LIVE' } },
+				league: { name: 'Russian Premier League', country: 'Russia' },
+				teams: { home: { name: 'Цска' }, away: { name: 'Локомотив' } },
+				goals: { home: 0, away: 0 },
+			},
+		]
+		currentSource.value = 'Демо-данные'
+		lastUpdate.value = new Date().toLocaleTimeString('ru-RU') + ' (демо)'
+		isDemoData.value = true // 🔑 Это демо-данные
+		console.log('📋 Загружены демо-данные')
+	}
 }
 
 // 🔄 Основная функция загрузки
@@ -454,9 +479,22 @@ async function loadLiveMatches() {
 	if (!autoRefresh.value) return
 
 	try {
-		await loadFromApiFootball()
+		// 🔑 Пытаемся загрузить настоящие данные
+		const apiFootballSuccess = await loadFromApiFootball()
+		
+		// 🔑 Если не получилось с первым API, пробуем второй
+		if (!apiFootballSuccess) {
+			const backupSuccess = await loadFromBackupSources()
+			
+			// 🔑 Если оба API не сработали, показываем демо-данные
+			if (!backupSuccess) {
+				loadDemoData()
+			}
+		}
 	} catch (error) {
 		console.error('Ошибка загрузки матчей:', error)
+		// 🔑 При ошибке тоже показываем демо-данные
+		loadDemoData()
 	}
 }
 
@@ -501,6 +539,12 @@ const showFilters = ref(false) // 👈 управление отображени
 
 .goal-flash {
 	animation: goalFlash 2s ease-in-out;
+}
+
+/* 🎭 Стиль для демо-матчей */
+.demo-match {
+	opacity: 0.8;
+	border-left: 3px solid #f59e0b;
 }
 
 .scrollbar-hide {
@@ -556,5 +600,10 @@ const showFilters = ref(false) // 👈 управление отображени
 
 .dark .match:hover {
 	border-color: #4b5563;
+}
+
+.dark .demo-match {
+	border-left: 3px solid #d97706;
+	opacity: 0.9;
 }
 </style>

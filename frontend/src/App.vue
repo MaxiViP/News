@@ -26,8 +26,23 @@
 					</RouterLink>
 				</h1>
 
+	
 				<!-- блок справа -->
 				<div class="right">
+								<!-- 🔘 Кнопка показать/скрыть матчи -->
+				<div>
+					<!-- 🔘 Кнопка -->
+					<button
+						@click="showMatches = !showMatches"
+						class="px-4 py-2  rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+					>
+						{{ showMatches ? '❌ ' : '⚽ ' }}
+					</button>
+
+					<!-- ⚽ Компонент матчей -->
+					<Matches v-if="showMatches" />
+				</div>
+
 					<CurrencyRates />
 					<DarkToggle />
 
@@ -68,12 +83,14 @@
 				</div>
 			</div>
 		</header>
-		  <div>
-    <!-- <header class="p-4 bg-blue-600 text-white">NEWS & SPORT</header> -->
 
-    <!-- ✅ Лайв-матчи -->
-    <LiveMatches />
-  </div>
+		<!-- 🏃 Блок матчей (изначально скрыт) -->
+		<transition name="slide-down">
+			<div v-if="showMatches" class="pb-4">
+				<LiveMatches />
+			</div>
+		</transition>
+
 		<router-view />
 	</div>
 </template>
@@ -82,10 +99,12 @@
 import { ref } from 'vue'
 import DarkToggle from './components/DarkToggle.vue'
 import CurrencyRates from './components/CurrencyRates.vue'
-import LiveMatches from "./components/LiveMatches.vue"
+import LiveMatches from './components/LiveMatches.vue'
+
 
 const q = ref('')
 const menuOpen = ref(false)
+const showMatches = ref(false) // 🔑 Управление видимостью матчей
 
 function closeMenu() {
 	menuOpen.value = false
@@ -154,6 +173,7 @@ function closeMenu() {
 	margin-left: auto;
 	display: flex;
 	align-items: center;
+	
 	gap: 20px;
 	position: relative;
 }
@@ -266,6 +286,22 @@ html.dark .menu {
 	transform: translateY(1px);
 }
 
+/* 🔽 Анимация появления блока матчей */
+.slide-down-enter-active,
+.slide-down-leave-active {
+	transition: all 0.3s ease;
+}
+
+.slide-down-enter-from {
+	opacity: 0;
+	transform: translateY(-20px);
+}
+
+.slide-down-leave-to {
+	opacity: 0;
+	transform: translateY(-20px);
+}
+
 @media (max-width: 600px) {
 	.logo-text {
 		width: 30px;
@@ -278,6 +314,27 @@ html.dark .menu {
 @media (max-width: 900px) {
 	.search {
 		display: none;
+	}
+}
+
+/* 🔘 Адаптивность кнопки матчей */
+@media (max-width: 768px) {
+	.bar {
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	/* Переносим кнопку матчей на новую строку на мобильных */
+	.bar > button {
+		order: 2;
+		width: 100%;
+		text-align: center;
+		margin-top: 8px;
+	}
+
+	.right {
+		order: 1;
+		margin-left: 0;
 	}
 }
 </style>
