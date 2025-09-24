@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Host: https://newsandnews.ru
+Sitemap: https://newsandnews.ru/sitemap.xml
