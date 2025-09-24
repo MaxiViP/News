@@ -1,5 +1,6 @@
 <template>
 	<RouterLink to="/currency" class="currency-rates flex flex-col gap-1 text-sm transition-colors duration-300">
+		<span class="hidden sm:inline">Конвертер валют</span>
 		<span v-if="rates" class="flex items-center gap-1">
 			<span class="hidden sm:inline">💵 USD:</span>
 			<span class="font-semibold dark:text-green-700"> {{ rates.USD?.toFixed(1) }} ₽ </span>
