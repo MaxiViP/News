@@ -24,12 +24,24 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useHead } from '@vueuse/head'
 import { useNews } from '../stores/news'
 import ArticleCard from '../components/ArticleCard.vue'
 import CategoryTabs from '../components/CategoryTabs.vue'
 
 const route = useRoute()
 const news = useNews()
+const category = route.params.category as string
+
+useHead({
+  title: `Новости ${category} — News and News`,
+  meta: [
+    {
+      name: 'description',
+      content: `Читайте последние новости категории ${category} на News and News.`,
+    },
+  ],
+})
 
 async function loadCategory() {
   const cat = String(route.params.category || 'tech') as any

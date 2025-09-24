@@ -24,6 +24,17 @@
 </template>
 
 <script setup lang="ts">
+import { useHead } from '@vueuse/head'
+
+useHead({
+  title: 'Контакты — News and News',
+  meta: [
+    {
+      name: 'description',
+      content: 'Свяжитесь с редакцией News and News. Email, телефон и соцсети.',
+    },
+  ],
+})
 </script>
 
 <style scoped>
