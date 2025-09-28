@@ -4,7 +4,7 @@ import fetch from 'node-fetch'
 const router = Router()
 
 const FOOTBALL_API = 'https://api.football-data.org/v4'
-const API_KEY = process.env.FOOTBALL_DATA_KEY || ''
+ const API_KEY = process.env.FOOTBALL_API_TOKEN || ''
 
 async function fetchFromFootball(endpoint: string) {
 	const res = await fetch(`${FOOTBALL_API}${endpoint}`, {
