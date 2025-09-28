@@ -9,33 +9,29 @@ import { logger } from '../utils/logger.js'
 const app = express()
 
 // ✅ CORS — читаем список из env
-const allowedOrigins = (
-	process.env.CORS_ORIGIN || 'http://localhost:5173,https://newsandnews.ru,https://maxivip-news-9235.twc1.net'
-)
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,https://newsandnews.ru,https://maxivip-news-9235.twc1.net')
 	.split(',')
 	.map(s => s.trim())
 	.filter(Boolean)
 
 logger.info(`🔐 Allowed origins: ${allowedOrigins.join(', ') || 'none'}`)
 
-app.use(
-	cors({
-		origin: function (origin, callback) {
-			// Разрешаем запросы без origin (например, из мобильных приложений или Postman)
-			if (!origin) return callback(null, true)
-
-			if (allowedOrigins.includes(origin)) {
-				return callback(null, true)
-			} else {
-				logger.warn(`❌ CORS blocked: ${origin}. Allowed: ${allowedOrigins.join(', ')}`)
-				return callback(new Error(`CORS blocked: ${origin}`))
-			}
-		},
-		credentials: true,
-		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-		allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-	})
-)
+app.use(cors({
+	origin: function (origin, callback) {
+		// Разрешаем запросы без origin (например, из мобильных приложений или Postman)
+		if (!origin) return callback(null, true)
+		
+		if (allowedOrigins.includes(origin)) {
+			return callback(null, true)
+		} else {
+			logger.warn(`❌ CORS blocked: ${origin}. Allowed: ${allowedOrigins.join(', ')}`)
+			return callback(new Error(`CORS blocked: ${origin}`))
+		}
+	},
+	credentials: true,
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}))
 
 // ✅ Обработка preflight запросов
 app.options('*', cors())
