@@ -4,11 +4,13 @@ import matchesRouter from './matches.js'
 
 export const apiRouter = Router()
 
-// эндпоинт для новостей
+// ✅ все матчевые эндпоинты будут по /api/matches/*
+apiRouter.use('/matches', matchesRouter)
+
+// ✅ эндпоинт для новостей
 apiRouter.get('/news', newsHandler)
 
-// healthcheck для мониторинга
+// ✅ healthcheck для мониторинга
 apiRouter.get('/health', (_req, res) => {
 	res.json({ status: 'ok' })
 })
-apiRouter.use('/', matchesRouter)
