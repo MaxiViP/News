@@ -1,8 +1,8 @@
+"use strict";
 // import axios from 'axios'
 // import { normalize } from '../core/normalize.js'
 // import type { Category } from '../core/types.js'
 // import { env } from '../server/env.js'
-export {};
 // const mapToNewsApi: Partial<Record<Category, string>> = {
 //   tech: 'technology',
 //   sports: 'sports',
@@ -76,3 +76,4 @@ export {};
 //   const articles = (data.articles ?? []) as any[]
 //   return articles.map(a => normalize.fromNewsApi(a, 'tech' as Category))
 // }
+//# sourceMappingURL=newsapi.js.map

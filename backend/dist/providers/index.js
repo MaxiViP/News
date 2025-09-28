@@ -26,3 +26,4 @@ export async function fetchFromProviders(opts) {
     // } catch {}
     return [];
 }
+//# sourceMappingURL=index.js.map

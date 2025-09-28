@@ -1,12 +1,15 @@
-import express from 'express'
+import express, { Router } from 'express'
 import cors from 'cors'
 import path from 'path'
 import fs from 'fs'
+import fetch from 'node-fetch'
+import listEndpoints from 'express-list-endpoints'
+
 import { apiRouter } from './routes/index.js'
 import { logger } from '../utils/logger.js'
-import listEndpoints from 'express-list-endpoints'
 import { env } from './env.js'
 
+// -------------------- APP --------------------
 const app = express()
 
 // CORS с использованием env
@@ -38,7 +41,45 @@ if (fs.existsSync(distPath)) {
 	logger.warn(`Frontend dist not found at ${distPath}`)
 }
 
-// Используем PORT из env
+// -------------------- MATCHES ROUTER --------------------
+const matchesRouter = Router()
+
+const FOOTBALL_API = 'https://api.football-data.org/v4'
+const API_KEY = env.FOOTBALL_API_TOKEN || ''
+
+async function fetchFromFootball(endpoint: string): Promise<any> {
+	if (!API_KEY) {
+		throw new Error('Football API token not configured')
+	}
+
+	const res = await fetch(`${FOOTBALL_API}${endpoint}`, {
+		headers: { 'X-Auth-Token': API_KEY },
+	})
+	if (!res.ok) throw new Error(`football-data.org error: ${res.status}`)
+	return res.json()
+}
+
+matchesRouter.get('/', async (_req, res) => {
+	try {
+		const data = await fetchFromFootball('/matches?status=SCHEDULED,TIMED')
+		res.json({ matches: data.matches || [] })
+	} catch (err: any) {
+		res.status(500).json({ error: err.message })
+	}
+})
+
+matchesRouter.get('/live', async (_req, res) => {
+	try {
+		const data = await fetchFromFootball('/matches?status=IN_PLAY,PAUSED')
+		res.json({ matches: data.matches || [] })
+	} catch (err: any) {
+		res.status(500).json({ error: err.message })
+	}
+})
+
+app.use('/api/matches', matchesRouter)
+
+// -------------------- START --------------------
 app.listen(env.PORT, '0.0.0.0', () => {
 	logger.info(`✅ Server running on http://0.0.0.0:${env.PORT} in ${env.NODE_ENV} mode`)
 	console.log(listEndpoints(app))
