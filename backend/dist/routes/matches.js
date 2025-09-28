@@ -13,7 +13,11 @@ async function fetchFromFootball(endpoint) {
         headers: { 'X-Auth-Token': API_KEY },
     });
     if (!res.ok) {
-        // Добавляем больше информации об ошибке
+        // Если ошибка 429 (лимит), возвращаем пустой массив вместо ошибки
+        if (res.status === 429) {
+            console.warn('⚠️ Rate limit exceeded for football-data.org');
+            return { matches: [] };
+        }
         const errorText = await res.text();
         throw new Error(`football-data.org error: ${res.status} - ${errorText}`);
     }
@@ -30,34 +34,38 @@ function getKeySource() {
 matchesRouter.get('/', async (_req, res) => {
     try {
         console.log(`🔑 Используется ключ из: ${getKeySource()}`);
-        const data = await fetchFromFootball('/matches?status=SCHEDULED,TIMED');
+        const data = await fetchFromFootball('/matches?status=SCHEDULED,TIMED&limit=20');
         res.json({
             matches: data.matches || [],
-            _keySource: getKeySource(), // для отладки
+            _keySource: getKeySource(),
         });
     }
     catch (err) {
         console.error('❌ Ошибка загрузки матчей:', err.message);
-        res.status(500).json({
-            error: err.message,
+        // Возвращаем пустой массив вместо ошибки 500
+        res.json({
+            matches: [],
             _keySource: getKeySource(),
+            error: err.message,
         });
     }
 });
 matchesRouter.get('/live', async (_req, res) => {
     try {
         console.log(`🔑 Используется ключ из: ${getKeySource()}`);
-        const data = await fetchFromFootball('/matches?status=IN_PLAY,PAUSED');
+        const data = await fetchFromFootball('/matches?status=IN_PLAY,PAUSED&limit=10');
         res.json({
             matches: data.matches || [],
-            _keySource: getKeySource(), // для отладки
+            _keySource: getKeySource(),
         });
     }
     catch (err) {
         console.error('❌ Ошибка загрузки LIVE матчей:', err.message);
-        res.status(500).json({
-            error: err.message,
+        // Возвращаем пустой массив вместо ошибки 500
+        res.json({
+            matches: [],
             _keySource: getKeySource(),
+            error: err.message,
         });
     }
 });
@@ -81,7 +89,7 @@ matchesRouter.get('/debug', async (_req, res) => {
         const keySource = getKeySource();
         const hasKey = !!API_KEY;
         const keyPreview = hasKey ? `${API_KEY.slice(0, 8)}...` : 'отсутствует';
-        res.status(500).json({
+        res.json({
             keyConfigured: hasKey,
             keySource,
             keyPreview,
