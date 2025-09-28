@@ -5,7 +5,9 @@ import { env } from '../server/env.js'
 const matchesRouter = Router()
 
 const FOOTBALL_API = 'https://api.football-data.org/v4'
-const API_KEY = env.FOOTBALL_API_TOKEN || ''
+
+// ✅ используем оба ключа: сначала FOOTBALL_API_TOKEN, если пусто — FOOTBALL_DATA_KEY
+const API_KEY = env.FOOTBALL_API_TOKEN || process.env.FOOTBALL_DATA_KEY || ''
 
 async function fetchFromFootball(endpoint: string): Promise<any> {
 	if (!API_KEY) {

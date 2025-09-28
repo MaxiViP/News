@@ -20,5 +20,8 @@ if (!result.success) {
 	console.error('❌ Invalid environment variables:', result.error.format())
 	process.exit(1)
 }
+console.log('📦 Loaded env from NODE_ENV:', process.env.NODE_ENV)
+console.log('📦 FOOTBALL_API_TOKEN:', process.env.FOOTBALL_API_TOKEN ? '✅ set' : '❌ missing')
+
 
 export const env = result.data
