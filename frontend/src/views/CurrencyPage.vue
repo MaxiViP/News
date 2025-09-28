@@ -1,5 +1,5 @@
 <template>
-	<div class="currency-page max-w-4xl mx-auto p-6 space-y-10">
+	<div class="currency-page max-w-4xl mx-auto p-6 space-y-10 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 min-h-screen transition-all duration-300">
 		<!-- 🔄 Конвертер -->
 		<section class="converter p-6 rounded-xl shadow-lg bg-white dark:bg-gray-800 transition-all duration-300">
 			<h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Конвертер валют</h2>
@@ -11,13 +11,14 @@
 					@input="onAmountInput"
 					inputmode="numeric"
 					pattern="[0-9]*"
-					class="border px-3 py-2 rounded-lg w-full sm:w-40 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
+					class="border px-3 py-2 rounded-lg w-full sm:w-40 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 transition"
+					placeholder="0"
 				/>
 
 				<!-- выбор валюты из -->
-				<select v-model="from" class="border px-3 py-2 rounded-lg w-full sm:w-40 dark:bg-gray-700 dark:text-white">
-					<optgroup label="Традиционные валюты">
-						<option v-for="c in Object.keys(fiatRates)" :key="c" :value="c">
+				<select v-model="from" class="border px-3 py-2 rounded-lg w-full sm:w-40 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 transition">
+					<optgroup label="Традиционные валюты" class="bg-white dark:bg-gray-700">
+						<option v-for="c in Object.keys(fiatRates)" :key="c" :value="c" class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
 							<span class="flex items-center gap-2">
 								<template v-if="flags[c]?.startsWith('data:image/svg')">
 									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
@@ -26,8 +27,8 @@
 							</span>
 						</option>
 					</optgroup>
-					<optgroup label="Криптовалюты">
-						<option v-for="c in Object.keys(cryptoRates)" :key="c" :value="c">
+					<optgroup label="Криптовалюты" class="bg-white dark:bg-gray-700">
+						<option v-for="c in Object.keys(cryptoRates)" :key="c" :value="c" class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
 							<span class="flex items-center gap-2">
 								<template v-if="flags[c]?.startsWith('data:image/svg')">
 									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
@@ -39,12 +40,12 @@
 				</select>
 
 				<!-- кнопка обмена -->
-				<button @click="swap" class="swap-btn transform transition hover:scale-110">⇄</button>
+				<button @click="swap" class="swap-btn transform transition hover:scale-110 bg-blue-600 dark:bg-blue-500 text-white">⇄</button>
 
 				<!-- выбор валюты в -->
-				<select v-model="to" class="border px-3 py-2 rounded-lg w-full sm:w-40 dark:bg-gray-700 dark:text-white">
-					<optgroup label="Традиционные валюты">
-						<option v-for="c in Object.keys(fiatRates)" :key="c" :value="c">
+				<select v-model="to" class="border px-3 py-2 rounded-lg w-full sm:w-40 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 transition">
+					<optgroup label="Традиционные валюты" class="bg-white dark:bg-gray-700">
+						<option v-for="c in Object.keys(fiatRates)" :key="c" :value="c" class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
 							<span class="flex items-center gap-2">
 								<template v-if="flags[c]?.startsWith('data:image/svg')">
 									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
@@ -53,8 +54,8 @@
 							</span>
 						</option>
 					</optgroup>
-					<optgroup label="Криптовалюты">
-						<option v-for="c in Object.keys(cryptoRates)" :key="c" :value="c">
+					<optgroup label="Криптовалюты" class="bg-white dark:bg-gray-700">
+						<option v-for="c in Object.keys(cryptoRates)" :key="c" :value="c" class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
 							<span class="flex items-center gap-2">
 								<template v-if="flags[c]?.startsWith('data:image/svg')">
 									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
@@ -84,19 +85,18 @@
 
 		<!-- 📊 Фиат -->
 		<section>
-			<h2 class="text-xl font-semibold mb-2">Традиционные валюты</h2>
+			<h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Традиционные валюты</h2>
 			<ul class="space-y-2">
 				<li
 					v-for="code in Object.keys(fiatRates)"
 					:key="code"
-					class="flex justify-between border-b pb-1 relative hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
+					class="flex justify-between border-b pb-1 relative hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-600"
 					@click="setCurrency(code)"
 				>
 					<span class="font-semibold flex items-center gap-2">
 						<template v-if="flags[code]">
 							<img :src="flags[code]" alt="" class="w-5 h-5 inline-block" />
 						</template>
-
 						<template v-else>{{ flags[code] }}</template>
 						{{ code }}
 					</span>
@@ -107,12 +107,12 @@
 
 		<!-- ₿ Крипта -->
 		<section>
-			<h2 class="text-xl font-semibold mb-2">Криптовалюты</h2>
+			<h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Криптовалюты</h2>
 			<ul class="space-y-2">
 				<li
 					v-for="code in Object.keys(cryptoRates)"
 					:key="code"
-					class="flex justify-between border-b pb-1 relative hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
+					class="flex justify-between border-b pb-1 relative hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-600"
 					@click="setCurrency(code)"
 				>
 					<span class="font-semibold flex items-center gap-2">
@@ -159,7 +159,7 @@ const flags: Record<string, string> = {
 	EUR: euFlag,
 	CNY: cnFlag,
 	TRY: trFlag,
-	KZT: kzFlag, // ✅ Теперь KZT использует SVG флаг
+	KZT: kzFlag,
 	BYN: byFlag,
 	GBP: gbFlag,
 	CHF: chFlag,
@@ -199,21 +199,19 @@ async function loadFiat() {
 
 		// ✅ Добавляем KZT вручную, если его нет в API
 		if (!rates.KZT) {
-			// Примерный курс KZT/RUB (можно заменить на актуальный)
-			rates.KZT = 0.15 // 1 KZT = 0.15 RUB
+			rates.KZT = 0.15
 		}
 
 		fiatRates.value = rates
 	} catch (err) {
 		console.error('Ошибка загрузки фиатных валют:', err)
-		// ✅ На случай ошибки API добавляем базовые курсы
 		fiatRates.value = {
 			RUB: 1,
 			USD: 90.0,
 			EUR: 98.0,
 			CNY: 12.5,
 			TRY: 2.8,
-			KZT: 0.15, // ✅ KZT всегда будет в списке
+			KZT: 0.15,
 			BYN: 28.0,
 			GBP: 114.0,
 			CHF: 102.0,
@@ -236,7 +234,6 @@ async function loadCrypto() {
 		}
 	} catch (err) {
 		console.error('Ошибка загрузки криптовалют:', err)
-		// На случай ошибки API добавляем базовые курсы
 		cryptoRates.value = {
 			BTC: 3500000,
 			ETH: 250000,
@@ -251,23 +248,19 @@ async function loadBtcChart() {
 		const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=rub&days=15')
 		const data = await res.json()
 
-		// Берём только 15 последних дней
 		const labels = data.prices.map((p: any) =>
 			new Date(p[0]).toLocaleDateString('ru-RU', {
 				day: '2-digit',
-				month: 'short', // 👈 короткое название месяца
 			})
 		)
 		const prices = data.prices.map((p: any) => p[1])
 
-		// группируем по дню
 		const dayMap: Record<string, number[]> = {}
 		labels.forEach((date, i) => {
 			if (!dayMap[date]) dayMap[date] = []
 			dayMap[date].push(prices[i])
 		})
 
-		// среднее значение по дню
 		const finalLabels = Object.keys(dayMap)
 		const finalPrices = finalLabels.map(day => dayMap[day].reduce((a, b) => a + b, 0) / dayMap[day].length)
 
@@ -275,25 +268,30 @@ async function loadBtcChart() {
 			const ctx = btcChart.value.getContext('2d')
 			if (!ctx) return
 
-			// 🎨 Градиент
+			// Определяем цвета для светлой и темной темы
+			const isDark = document.documentElement.classList.contains('dark')
+			const textColor = isDark ? '#f3f4f6' : '#374151'
+			const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'
+			const tooltipBg = isDark ? '#1f2937' : '#1e293b'
+
 			const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-			gradient.addColorStop(0, 'rgba(37,99,235,0.4)')
-			gradient.addColorStop(1, 'rgba(37,99,235,0)')
+			gradient.addColorStop(0, isDark ? 'rgba(59,130,246,0.4)' : 'rgba(37,99,235,0.4)')
+			gradient.addColorStop(1, isDark ? 'rgba(59,130,246,0)' : 'rgba(37,99,235,0)')
 
 			new Chart(ctx, {
 				type: 'line',
 				data: {
-					labels: finalLabels, // 📅 теперь короткий формат дат
+					labels: finalLabels,
 					datasets: [
 						{
 							label: 'BTC/RUB',
 							data: finalPrices,
-							borderColor: '#2563eb',
+							borderColor: isDark ? '#3b82f6' : '#2563eb',
 							backgroundColor: gradient,
 							tension: 0.4,
 							pointRadius: 3,
 							pointHoverRadius: 6,
-							pointBackgroundColor: '#2563eb',
+							pointBackgroundColor: isDark ? '#3b82f6' : '#2563eb',
 							fill: true,
 						},
 					],
@@ -303,7 +301,7 @@ async function loadBtcChart() {
 					plugins: {
 						legend: { display: false },
 						tooltip: {
-							backgroundColor: '#1e293b',
+							backgroundColor: tooltipBg,
 							titleColor: '#fff',
 							bodyColor: '#e2e8f0',
 							displayColors: false,
@@ -319,15 +317,22 @@ async function loadBtcChart() {
 					},
 					scales: {
 						x: {
-							grid: { display: false },
+							grid: { 
+								display: false,
+								color: gridColor 
+							},
 							ticks: {
-								autoSkip: false, // показываем все даты
+								autoSkip: false,
 								maxRotation: 0,
+								color: textColor,
 							},
 						},
 						y: {
-							grid: { color: 'rgba(0,0,0,0.05)' },
+							grid: { 
+								color: gridColor 
+							},
 							ticks: {
+								color: textColor,
 								callback: value =>
 									new Intl.NumberFormat('ru-RU', {
 										notation: 'compact',
@@ -354,7 +359,6 @@ const formattedAmount = computed(() => new Intl.NumberFormat('ru-RU').format(amo
 
 function onAmountInput(e: Event) {
 	const raw = (e.target as HTMLInputElement).value
-	// Оставляем только цифры
 	const numeric = raw.replace(/\D/g, '')
 	amount.value = Number(numeric || 0)
 }
@@ -404,9 +408,18 @@ watch([from, to], () => {
 	padding: 0.6rem 0.9rem;
 	border-radius: 50%;
 	font-size: 1.2rem;
+	border: none;
+	cursor: pointer;
 }
 .swap-btn:hover {
 	background: #1d4ed8;
+}
+
+.dark .swap-btn {
+	background: #3b82f6;
+}
+.dark .swap-btn:hover {
+	background: #2563eb;
 }
 
 /* анимации */

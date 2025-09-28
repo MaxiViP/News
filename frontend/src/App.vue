@@ -26,22 +26,21 @@
 					</RouterLink>
 				</h1>
 
-	
 				<!-- блок справа -->
 				<div class="right">
-								<!-- 🔘 Кнопка показать/скрыть матчи -->
-				<div>
-					<!-- 🔘 Кнопка -->
-					<button
-						@click="showMatches = !showMatches"
-						class="px-4 py-2  rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-					>
-						{{ showMatches ? '❌ ' : '⚽ ' }}
-					</button>
+					<!-- 🔘 Кнопка показать/скрыть матчи -->
+					<div>
+						<!-- 🔘 Кнопка -->
+						<button
+							@click="showMatches = !showMatches"
+							class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+						>
+							{{ showMatches ? '❌ ' : '⚽ ' }}
+						</button>
 
-					<!-- ⚽ Компонент матчей -->
-					<Matches v-if="showMatches" />
-				</div>
+						<!-- ⚽ Компонент матчей -->
+						<Matches v-if="showMatches" />
+					</div>
 
 					<CurrencyRates />
 					<DarkToggle />
@@ -100,7 +99,6 @@ import { ref } from 'vue'
 import DarkToggle from './components/DarkToggle.vue'
 import CurrencyRates from './components/CurrencyRates.vue'
 import LiveMatches from './components/LiveMatches.vue'
-
 
 const q = ref('')
 const menuOpen = ref(false)
@@ -173,7 +171,7 @@ function closeMenu() {
 	margin-left: auto;
 	display: flex;
 	align-items: center;
-	
+
 	gap: 20px;
 	position: relative;
 }
