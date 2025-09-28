@@ -2,7 +2,10 @@ import dotenv from 'dotenv'
 import { z } from 'zod'
 
 // Загружаем .env файлы
-dotenv.config()
+dotenv.config({
+	path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development',
+})
+
 
 const EnvSchema = z.object({
 	PORT: z.coerce.number().default(3001),

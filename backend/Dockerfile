@@ -2,23 +2,23 @@ FROM node:22
 
 WORKDIR /opt/build
 
-# Копируем package.json
+# Копируем package.json и ставим зависимости
 COPY package*.json ./
 RUN npm install
 
-# Копируем ВСЕ файлы включая .env.production
+# Копируем весь проект
 COPY . .
 
-# Копируем .env.production в рабочую директорию
-COPY .env.production .env
+# Указываем переменные окружения напрямую
+ENV PORT=8080
+ENV NODE_ENV=production
+ENV CACHE_PROVIDER=memory
+ENV CORS_ORIGIN=https://newsandnews.ru,https://maxivip-news-9235.twc1.net
+ENV FOOTBALL_API_TOKEN=563b1e8db9574057a9bae05e33cbbe85
 
 # Собираем backend
 RUN npm run build -w backend
 
 EXPOSE 8080
-
-ENV PORT=8080
-ENV NODE_ENV=production
-ENV CACHE_PROVIDER=memory
 
 CMD ["npm", "start", "-w", "backend"]
