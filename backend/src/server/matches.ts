@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import fetch from 'node-fetch'
-import { env } from '../../server/env.js' // 👈 импортируем env
+import { env } from './env.js' // 👈 импортируем env
 
 const matchesRouter = Router()
 
