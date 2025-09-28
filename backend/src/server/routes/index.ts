@@ -1,4 +1,3 @@
-// routes/index.ts
 import { Router } from 'express'
 import { newsHandler } from './handlers/news.js'
 import matchesRouter from './matches.js'

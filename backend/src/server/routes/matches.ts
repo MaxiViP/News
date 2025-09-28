@@ -13,7 +13,6 @@ async function fetchFromFootball(endpoint: string): Promise<any> {
 	if (!res.ok) throw new Error(`football-data.org error: ${res.status}`)
 	return res.json()
 }
-// GET /api/matches/:id
 
 // GET /api/matches
 matchesRouter.get('/', async (_req, res) => {
