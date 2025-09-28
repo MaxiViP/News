@@ -13,6 +13,7 @@ const EnvSchema = z.object({
 	REDIS_URL: z.string().url().optional(),
 	CORS_ORIGIN: z.string().default('http://localhost:5173'),
 	FOOTBALL_API_TOKEN: z.string().optional(),
+	FOOTBALL_DATA_KEY: z.string().optional(),
 })
 
 const result = EnvSchema.safeParse(process.env)
@@ -22,6 +23,5 @@ if (!result.success) {
 }
 console.log('📦 Loaded env from NODE_ENV:', process.env.NODE_ENV)
 console.log('📦 FOOTBALL_API_TOKEN:', process.env.FOOTBALL_API_TOKEN ? '✅ set' : '❌ missing')
-
 
 export const env = result.data
