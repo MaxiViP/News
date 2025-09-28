@@ -14,8 +14,8 @@ async function fetchFromFootball(endpoint: string) {
 	return res.json()
 }
 
-// Upcoming
-matchesRouter.get('/matches', async (_req, res) => {
+// GET /api/matches
+matchesRouter.get('/', async (_req, res) => {
 	try {
 		const data = await fetchFromFootball('/matches?status=SCHEDULED,TIMED')
 		res.json({ matches: data.matches || [] })
@@ -24,8 +24,8 @@ matchesRouter.get('/matches', async (_req, res) => {
 	}
 })
 
-// Live
-matchesRouter.get('/matches/live', async (_req, res) => {
+// GET /api/matches/live
+matchesRouter.get('/live', async (_req, res) => {
 	try {
 		const data = await fetchFromFootball('/matches?status=IN_PLAY,PAUSED')
 		res.json({ matches: data.matches || [] })

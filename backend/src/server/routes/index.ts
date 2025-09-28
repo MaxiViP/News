@@ -4,11 +4,13 @@ import matchesRouter from './matches.js'
 
 export const apiRouter = Router()
 
-// матчи
-apiRouter.use(matchesRouter)
+// теперь матчи будут на /api/matches и /api/matches/live
+apiRouter.use('/matches', matchesRouter)
 
 // новости
 apiRouter.get('/news', newsHandler)
 
 // health внутри apiRouter
-apiRouter.get('/health', (_req, res) => res.json({ status: 'ok' }))
+apiRouter.get('/health', (_req, res) => {
+	res.json({ status: 'ok' })
+})
