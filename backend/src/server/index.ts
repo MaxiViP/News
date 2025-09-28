@@ -5,6 +5,7 @@ import path from 'path'
 import fs from 'fs'
 import { apiRouter } from './routes/index.js'
 import { logger } from '../utils/logger.js'
+import listEndpoints from 'express-list-endpoints'
 
 const app = express()
 
