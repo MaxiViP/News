@@ -1,50 +1,57 @@
 import 'dotenv/config'
 import express from 'express'
-import cors from 'cors'
 import path from 'path'
 import fs from 'fs'
 import { apiRouter } from '../routes/index.js'
 import { logger } from '../utils/logger.js'
+import { corsMiddleware } from './cors.js'
 
 const app = express()
 
-// ✅ CORS — читаем список из env
-const allowedOrigins = (
-	process.env.CORS_ORIGIN || 'http://localhost:5173,https://newsandnews.ru,https://maxivip-news-9235.twc1.net'
-)
-	.split(',')
-	.map(s => s.trim())
-	.filter(Boolean)
+// ✅ Применяем CORS ко ВСЕМ запросам
+app.use(corsMiddleware)
 
-logger.info(`🔐 Allowed origins: ${allowedOrigins.join(', ') || 'none'}`)
+// ✅ Обработка preflight запросов для всех routes
+app.options('*', corsMiddleware)
 
-app.use(
-	cors({
-		origin: function (origin, callback) {
-			// Разрешаем запросы без origin (например, из мобильных приложений или Postman)
-			if (!origin) return callback(null, true)
+// ✅ Body parsers
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-			if (allowedOrigins.includes(origin)) {
-				return callback(null, true)
-			} else {
-				logger.warn(`❌ CORS blocked: ${origin}. Allowed: ${allowedOrigins.join(', ')}`)
-				return callback(new Error(`CORS blocked: ${origin}`))
-			}
-		},
-		credentials: true,
-		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-		allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+// ✅ healthcheck с явным CORS
+app.get('/api/health', (_req, res) => {
+	res.json({
+		ok: true,
+		timestamp: new Date().toISOString(),
+		env: process.env.NODE_ENV,
 	})
-)
+})
 
-// ✅ Обработка preflight запросов
-app.options('*', cors())
-
-// ✅ healthcheck
-app.get('/api/health', (_req, res) => res.json({ ok: true }))
-
-// ✅ подключаем все API роуты (включая /matches и /matches/live)
+// ✅ подключаем все API роуты
 app.use('/api', apiRouter)
+
+// ✅ Глобальный обработчик ошибок с CORS заголовками
+app.use((err: any, _req: any, res: any, _next: any) => {
+	console.error('❌ Server error:', err)
+
+	// Добавляем CORS заголовки даже для ошибок
+	res.header('Access-Control-Allow-Origin', _req.headers.origin || '*')
+	res.header('Access-Control-Allow-Credentials', 'true')
+	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+
+	if (err.message.includes('CORS')) {
+		return res.status(403).json({
+			error: 'CORS blocked',
+			message: err.message,
+		})
+	}
+
+	res.status(500).json({
+		error: 'Internal server error',
+		message: process.env.NODE_ENV === 'production' ? 'Something went wrong' : err.message,
+	})
+})
 
 // ✅ фронтенд (Vue dist)
 const distPath = path.resolve(process.cwd(), 'frontend/dist')
@@ -58,9 +65,17 @@ if (fs.existsSync(distPath)) {
 	logger.warn(`⚠️ Frontend dist not found at ${distPath}`)
 }
 
+// ✅ 404 handler с CORS
+app.use((_req, res) => {
+	res.header('Access-Control-Allow-Origin', _req.headers.origin || '*')
+	res.header('Access-Control-Allow-Credentials', 'true')
+	res.status(404).json({ error: 'Not found' })
+})
+
 // ✅ запуск сервера
 const PORT = Number(process.env.PORT) || 8080
 app.listen(PORT, '0.0.0.0', () => {
 	logger.info(`✅ Server running on http://0.0.0.0:${PORT}`)
-	logger.info(`🔐 CORS enabled for: ${allowedOrigins.join(', ')}`)
+	logger.info(`🔐 CORS enabled for: ${process.env.CORS_ORIGIN}`)
+	logger.info(`🌐 NODE_ENV: ${process.env.NODE_ENV}`)
 })
