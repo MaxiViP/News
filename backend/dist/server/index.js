@@ -6,13 +6,18 @@ import fs from 'fs';
 import { apiRouter } from '../routes/index.js';
 import { logger } from '../utils/logger.js';
 const app = express();
-// ✅ CORS
-const allowed = ['https://maxivip-news-9235.twc1.net'];
+// ✅ CORS — читаем список из env
+const allowed = (process.env.CORS_ORIGIN || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+logger.info(`🔐 Allowed origins: ${allowed.join(', ') || 'none'}`);
 app.use(cors({
     origin(origin, cb) {
         if (!origin || allowed.includes(origin)) {
             return cb(null, true);
         }
+        logger.warn(`❌ CORS blocked: ${origin}`);
         return cb(new Error(`CORS blocked: ${origin}`));
     },
     credentials: true,
@@ -31,7 +36,7 @@ if (fs.existsSync(distPath)) {
     });
 }
 else {
-    logger.warn(`Frontend dist not found at ${distPath}`);
+    logger.warn(`⚠️ Frontend dist not found at ${distPath}`);
 }
 // ✅ запуск сервера
 const PORT = Number(process.env.PORT) || 8080;
