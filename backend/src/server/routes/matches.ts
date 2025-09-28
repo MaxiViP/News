@@ -1,12 +1,17 @@
 import { Router } from 'express'
 import fetch from 'node-fetch'
+import { env } from '../../server/env.js' // 👈 импортируем env
 
 const matchesRouter = Router()
 
 const FOOTBALL_API = 'https://api.football-data.org/v4'
-const API_KEY = process.env.FOOTBALL_API_TOKEN || ''
+const API_KEY = env.FOOTBALL_API_TOKEN || '' // 👈 используем env
 
 async function fetchFromFootball(endpoint: string): Promise<any> {
+	if (!API_KEY) {
+		throw new Error('Football API token not configured')
+	}
+
 	const res = await fetch(`${FOOTBALL_API}${endpoint}`, {
 		headers: { 'X-Auth-Token': API_KEY },
 	})

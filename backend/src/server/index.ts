@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import path from 'path'
@@ -6,15 +5,18 @@ import fs from 'fs'
 import { apiRouter } from './routes/index.js'
 import { logger } from '../utils/logger.js'
 import listEndpoints from 'express-list-endpoints'
+import { env } from './env.js' // 👈 импортируем env
 
 const app = express()
 
-// CORS
-const allowed = ['https://maxivip-news-9235.twc1.net']
+// CORS с использованием env
+const allowedOrigins = env.CORS_ORIGIN.split(',').map(origin => origin.trim())
 app.use(
 	cors({
-		origin(origin, cb) {
-			if (!origin || allowed.includes(origin)) return cb(null, true)
+		origin: (origin, cb) => {
+			if (!origin || allowedOrigins.includes(origin) || env.NODE_ENV === 'development') {
+				return cb(null, true)
+			}
 			return cb(new Error(`CORS blocked: ${origin}`))
 		},
 		credentials: true,
@@ -36,8 +38,8 @@ if (fs.existsSync(distPath)) {
 	logger.warn(`Frontend dist not found at ${distPath}`)
 }
 
-const PORT = Number(process.env.PORT) || 8080
-app.listen(PORT, '0.0.0.0', () => {
-	logger.info(`✅ Server running on http://0.0.0.0:${PORT}`)
-	console.log(listEndpoints(app)) // 👈 покажет все пути
+// Используем PORT из env
+app.listen(env.PORT, '0.0.0.0', () => {
+	logger.info(`✅ Server running on http://0.0.0.0:${env.PORT} in ${env.NODE_ENV} mode`)
+	console.log(listEndpoints(app))
 })
