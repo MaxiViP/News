@@ -3,7 +3,9 @@ WORKDIR /opt/build
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build -w backend
+# вместо только handlers
+RUN npm run build -w backend && ls dist/routes
+
 EXPOSE 8080
 ENV PORT=8080
 ENV NODE_ENV=production
