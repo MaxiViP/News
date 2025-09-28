@@ -1,8 +1,18 @@
 <template>
-	<div class="currency-page max-w-4xl mx-auto p-6 space-y-10 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 min-h-screen transition-all duration-300">
+	<div
+		class="currency-page max-w-4xl mx-auto p-6 space-y-10 
+		       text-gray-900 dark:text-gray-100 
+		       bg-white dark:bg-gray-900 
+		       min-h-screen transition-all duration-300"
+	>
 		<!-- 🔄 Конвертер -->
-		<section class="converter p-6 rounded-xl shadow-lg bg-white dark:bg-gray-800 transition-all duration-300">
-			<h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Конвертер валют</h2>
+		<section
+			class="converter p-6 rounded-xl shadow-lg 
+			       bg-white dark:bg-gray-800 
+			       text-gray-900 dark:text-gray-100
+			       transition-all duration-300"
+		>
+			<h2 class="text-2xl font-bold mb-4">Конвертер валют</h2>
 
 			<div class="flex flex-col sm:flex-row gap-4 items-center animate-fade-in">
 				<!-- ввод суммы -->
@@ -11,57 +21,81 @@
 					@input="onAmountInput"
 					inputmode="numeric"
 					pattern="[0-9]*"
-					class="border px-3 py-2 rounded-lg w-full sm:w-40 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 transition"
+					class="border px-3 py-2 rounded-lg w-full sm:w-40 
+					       bg-white dark:bg-gray-700 
+					       text-gray-900 dark:text-gray-100
+					       border-gray-300 dark:border-gray-600 
+					       focus:ring-2 focus:ring-blue-500 transition"
 					placeholder="0"
 				/>
 
 				<!-- выбор валюты из -->
-				<select v-model="from" class="border px-3 py-2 rounded-lg w-full sm:w-40 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 transition">
-					<optgroup label="Традиционные валюты" class="bg-white dark:bg-gray-700">
-						<option v-for="c in Object.keys(fiatRates)" :key="c" :value="c" class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-							<span class="flex items-center gap-2">
-								<template v-if="flags[c]?.startsWith('data:image/svg')">
-									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
-								</template>
-								{{ c }}
-							</span>
+				<select
+					v-model="from"
+					class="border px-3 py-2 rounded-lg w-full sm:w-40 
+					       bg-white dark:bg-gray-700 
+					       text-gray-900 dark:text-gray-100
+					       border-gray-300 dark:border-gray-600 
+					       focus:ring-2 focus:ring-blue-500 transition"
+				>
+					<optgroup label="Традиционные валюты">
+						<option
+							v-for="c in Object.keys(fiatRates)"
+							:key="c"
+							:value="c"
+							class="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+						>
+							{{ c }}
 						</option>
 					</optgroup>
-					<optgroup label="Криптовалюты" class="bg-white dark:bg-gray-700">
-						<option v-for="c in Object.keys(cryptoRates)" :key="c" :value="c" class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-							<span class="flex items-center gap-2">
-								<template v-if="flags[c]?.startsWith('data:image/svg')">
-									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
-								</template>
-								{{ c }}
-							</span>
+					<optgroup label="Криптовалюты">
+						<option
+							v-for="c in Object.keys(cryptoRates)"
+							:key="c"
+							:value="c"
+							class="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+						>
+							{{ c }}
 						</option>
 					</optgroup>
 				</select>
 
 				<!-- кнопка обмена -->
-				<button @click="swap" class="swap-btn transform transition hover:scale-110 bg-blue-600 dark:bg-blue-500 text-white">⇄</button>
+				<button
+					@click="swap"
+					class="swap-btn transform transition hover:scale-110 
+					       bg-blue-600 dark:bg-blue-500 text-white"
+				>
+					⇄
+				</button>
 
 				<!-- выбор валюты в -->
-				<select v-model="to" class="border px-3 py-2 rounded-lg w-full sm:w-40 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 transition">
-					<optgroup label="Традиционные валюты" class="bg-white dark:bg-gray-700">
-						<option v-for="c in Object.keys(fiatRates)" :key="c" :value="c" class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-							<span class="flex items-center gap-2">
-								<template v-if="flags[c]?.startsWith('data:image/svg')">
-									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
-								</template>
-								{{ c }}
-							</span>
+				<select
+					v-model="to"
+					class="border px-3 py-2 rounded-lg w-full sm:w-40 
+					       bg-white dark:bg-gray-700 
+					       text-gray-900 dark:text-gray-100
+					       border-gray-300 dark:border-gray-600 
+					       focus:ring-2 focus:ring-blue-500 transition"
+				>
+					<optgroup label="Традиционные валюты">
+						<option
+							v-for="c in Object.keys(fiatRates)"
+							:key="c"
+							:value="c"
+							class="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+						>
+							{{ c }}
 						</option>
 					</optgroup>
-					<optgroup label="Криптовалюты" class="bg-white dark:bg-gray-700">
-						<option v-for="c in Object.keys(cryptoRates)" :key="c" :value="c" class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-							<span class="flex items-center gap-2">
-								<template v-if="flags[c]?.startsWith('data:image/svg')">
-									<img :src="flags[c]" alt="" class="w-5 h-5 inline-block" />
-								</template>
-								{{ c }}
-							</span>
+					<optgroup label="Криптовалюты">
+						<option
+							v-for="c in Object.keys(cryptoRates)"
+							:key="c"
+							:value="c"
+							class="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+						>
+							{{ c }}
 						</option>
 					</optgroup>
 				</select>
@@ -69,7 +103,10 @@
 
 			<!-- результат -->
 			<transition name="fade">
-				<div v-if="converted" class="mt-6 text-xl font-semibold text-gray-900 dark:text-gray-100 animate-bounce-in">
+				<div
+					v-if="converted"
+					class="mt-6 text-xl font-semibold animate-bounce-in"
+				>
 					{{ formattedAmount }} {{ from }} =
 					<span class="text-blue-600 dark:text-blue-400">{{ converted }}</span>
 					{{ to }}
@@ -78,28 +115,30 @@
 		</section>
 
 		<!-- 📈 График BTC -->
-		<section class="p-4 rounded-xl shadow-lg bg-white dark:bg-gray-800 transition-all duration-300">
-			<h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Курс BTC/RUB (15 дней)</h2>
+		<section
+			class="p-4 rounded-xl shadow-lg 
+			       bg-white dark:bg-gray-800 
+			       text-gray-900 dark:text-gray-100
+			       transition-all duration-300"
+		>
+			<h2 class="text-xl font-semibold mb-4">Курс BTC/RUB (15 дней)</h2>
 			<canvas ref="btcChart" class="w-full h-56"></canvas>
 		</section>
 
 		<!-- 📊 Фиат -->
 		<section>
-			<h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Традиционные валюты</h2>
+			<h2 class="text-xl font-semibold mb-2">Традиционные валюты</h2>
 			<ul class="space-y-2">
 				<li
 					v-for="code in Object.keys(fiatRates)"
 					:key="code"
-					class="flex justify-between border-b pb-1 relative hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-600"
+					class="flex justify-between border-b pb-1 relative cursor-pointer 
+					       hover:bg-gray-50 dark:hover:bg-gray-700
+					       text-gray-900 dark:text-gray-100
+					       border-gray-200 dark:border-gray-600"
 					@click="setCurrency(code)"
 				>
-					<span class="font-semibold flex items-center gap-2">
-						<template v-if="flags[code]">
-							<img :src="flags[code]" alt="" class="w-5 h-5 inline-block" />
-						</template>
-						<template v-else>{{ flags[code] }}</template>
-						{{ code }}
-					</span>
+					<span class="font-semibold flex items-center gap-2">{{ code }}</span>
 					<span>{{ format(fiatRates[code]) }} ₽</span>
 				</li>
 			</ul>
@@ -107,28 +146,24 @@
 
 		<!-- ₿ Крипта -->
 		<section>
-			<h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Криптовалюты</h2>
+			<h2 class="text-xl font-semibold mb-2">Криптовалюты</h2>
 			<ul class="space-y-2">
 				<li
 					v-for="code in Object.keys(cryptoRates)"
 					:key="code"
-					class="flex justify-between border-b pb-1 relative hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-600"
+					class="flex justify-between border-b pb-1 relative cursor-pointer 
+					       hover:bg-gray-50 dark:hover:bg-gray-700
+					       text-gray-900 dark:text-gray-100
+					       border-gray-200 dark:border-gray-600"
 					@click="setCurrency(code)"
 				>
-					<span class="font-semibold flex items-center gap-2">
-						<template v-if="flags[code]?.startsWith('data:image/svg')">
-							<img :src="flags[code]" alt="" class="w-5 h-5 inline-block" />
-						</template>
-						<template v-else>{{ flags[code] }}</template>
-						{{ code }}
-					</span>
+					<span class="font-semibold flex items-center gap-2">{{ code }}</span>
 					<span>{{ format(cryptoRates[code]) }} ₽</span>
 				</li>
 			</ul>
 		</section>
 	</div>
 </template>
-
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
 import Chart from 'chart.js/auto'
@@ -403,14 +438,14 @@ watch([from, to], () => {
 
 <style scoped>
 .swap-btn {
-	background: #2563eb;
-	color: white;
 	padding: 0.6rem 0.9rem;
 	border-radius: 50%;
 	font-size: 1.2rem;
 	border: none;
 	cursor: pointer;
+	transition: background 0.3s;
 }
+
 .swap-btn:hover {
 	background: #1d4ed8;
 }

@@ -38,8 +38,6 @@
 							{{ showMatches ? '❌ ' : '⚽ ' }}
 						</button>
 
-						<!-- ⚽ Компонент матчей -->
-						<Matches v-if="showMatches" />
 					</div>
 
 					<CurrencyRates />
@@ -99,6 +97,7 @@ import { ref } from 'vue'
 import DarkToggle from './components/DarkToggle.vue'
 import CurrencyRates from './components/CurrencyRates.vue'
 import LiveMatches from './components/LiveMatches.vue'
+import Matches from './components/LiveMatches.vue'
 
 const q = ref('')
 const menuOpen = ref(false)

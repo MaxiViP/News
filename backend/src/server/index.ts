@@ -10,7 +10,18 @@ import { logger } from '../utils/logger.js'
 const app = express()
 
 // CORS
-const allowed = (process.env.CORS_ORIGIN ?? '').split(',').filter(Boolean)
+// backend/src/server/index.ts
+
+const allowed = (process.env.CORS_ORIGIN ?? '')
+	.split(',')
+	.map(s => s.trim())
+	.filter(Boolean)
+
+// Always allow localhost for dev
+if (!allowed.includes('http://localhost:5173')) {
+	allowed.push('http://localhost:5173')
+}
+
 app.use(
 	cors({
 		origin(origin, cb) {
@@ -22,6 +33,7 @@ app.use(
 		credentials: true,
 	})
 )
+
 
 // API healthcheck
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
