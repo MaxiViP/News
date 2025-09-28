@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import fetch from 'node-fetch'
-import { env } from '../server/env.js' // 👈 импортируем env
+import { env } from '../server/env.js'
 
 const matchesRouter = Router()
 
 const FOOTBALL_API = 'https://api.football-data.org/v4'
-const API_KEY = env.FOOTBALL_API_TOKEN || '' // 👈 используем env
+const API_KEY = env.FOOTBALL_API_TOKEN || ''
 
 async function fetchFromFootball(endpoint: string): Promise<any> {
 	if (!API_KEY) {
@@ -19,7 +19,6 @@ async function fetchFromFootball(endpoint: string): Promise<any> {
 	return res.json()
 }
 
-// GET /api/matches
 matchesRouter.get('/', async (_req, res) => {
 	try {
 		const data = await fetchFromFootball('/matches?status=SCHEDULED,TIMED')
@@ -29,7 +28,6 @@ matchesRouter.get('/', async (_req, res) => {
 	}
 })
 
-// GET /api/matches/live
 matchesRouter.get('/live', async (_req, res) => {
 	try {
 		const data = await fetchFromFootball('/matches?status=IN_PLAY,PAUSED')
