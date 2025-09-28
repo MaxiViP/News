@@ -10,22 +10,12 @@ import { logger } from '../utils/logger.js'
 const app = express()
 
 // CORS
-// backend/src/server/index.ts
-
-const allowed = (process.env.CORS_ORIGIN ?? '')
-	.split(',')
-	.map(s => s.trim())
-	.filter(Boolean)
-
-// Always allow localhost for dev
-if (!allowed.includes('http://localhost:5173')) {
-	allowed.push('http://localhost:5173')
-}
+const allowed = ['https://maxivip-news-9235.twc1.net']
 
 app.use(
 	cors({
 		origin(origin, cb) {
-			if (!origin || allowed.length === 0 || allowed.includes(origin)) {
+			if (!origin || allowed.includes(origin)) {
 				return cb(null, true)
 			}
 			return cb(new Error(`CORS blocked: ${origin}`))
