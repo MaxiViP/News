@@ -1,29 +1,24 @@
 FROM node:22
 
-# Рабочая директория
 WORKDIR /opt/build
 
-# Устанавливаем зависимости
+# Копируем package.json
 COPY package*.json ./
 RUN npm install
 
-# Копируем весь код, включая .env.production
+# Копируем ВСЕ файлы включая .env.production
 COPY . .
 
-# Собираем backend (и сразу проверяем что matches.js попал в dist/routes)
-RUN npm run build -w backend && ls -la backend/dist/routes
+# Копируем .env.production в рабочую директорию
+COPY .env.production .env
 
-# Указываем, что сервер слушает порт 8080
+# Собираем backend
+RUN npm run build -w backend
+
 EXPOSE 8080
 
-# Основные ENV
 ENV PORT=8080
 ENV NODE_ENV=production
 ENV CACHE_PROVIDER=memory
 
-# ⚡ ВАЖНО: теперь .env.production доступен внутри контейнера
-# dotenv автоматически подхватит его, т.к. у тебя:
-# dotenv.config({ path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development' })
-
-# Запуск backend
 CMD ["npm", "start", "-w", "backend"]
