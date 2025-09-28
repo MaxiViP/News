@@ -129,8 +129,10 @@ function closeMenu() {
 	backdrop-filter: blur(6px);
 	box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.15);
 }
+
 .bar {
 	display: flex;
+	justify-content: space-between;
 	gap: 12px;
 	align-items: center;
 	padding: 12px 16px;
