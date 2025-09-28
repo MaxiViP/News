@@ -6,13 +6,14 @@ const matchesRouter = Router()
 const FOOTBALL_API = 'https://api.football-data.org/v4'
 const API_KEY = process.env.FOOTBALL_API_TOKEN || ''
 
-async function fetchFromFootball(endpoint: string) {
+async function fetchFromFootball(endpoint: string): Promise<any> {
 	const res = await fetch(`${FOOTBALL_API}${endpoint}`, {
 		headers: { 'X-Auth-Token': API_KEY },
 	})
 	if (!res.ok) throw new Error(`football-data.org error: ${res.status}`)
 	return res.json()
 }
+
 
 // GET /api/matches
 matchesRouter.get('/', async (_req, res) => {
