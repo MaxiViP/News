@@ -11,7 +11,6 @@ const EnvSchema = z.object({
     REDIS_URL: z.string().url().optional(),
     CORS_ORIGIN: z.string().default('http://localhost:5173'),
     FOOTBALL_API_TOKEN: z.string().optional(),
-    FOOTBALL_DATA_KEY: z.string().optional(),
 });
 const result = EnvSchema.safeParse(process.env);
 if (!result.success) {
