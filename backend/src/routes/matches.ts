@@ -1,27 +1,23 @@
 import { Router } from 'express'
 import fetch from 'node-fetch'
-import { env } from '../server/env.js'
 
-const matchesRouter = Router()
+const router = Router()
 
 const FOOTBALL_API = 'https://api.football-data.org/v4'
+const API_KEY = process.env.FOOTBALL_DATA_KEY || ''
 
-// ✅ используем оба ключа: сначала FOOTBALL_API_TOKEN, если пусто — FOOTBALL_DATA_KEY
-const API_KEY = env.FOOTBALL_API_TOKEN || process.env.FOOTBALL_DATA_KEY || ''
-
-async function fetchFromFootball(endpoint: string): Promise<any> {
-	if (!API_KEY) {
-		throw new Error('Football API token not configured')
-	}
-
+async function fetchFromFootball(endpoint: string) {
 	const res = await fetch(`${FOOTBALL_API}${endpoint}`, {
 		headers: { 'X-Auth-Token': API_KEY },
 	})
-	if (!res.ok) throw new Error(`football-data.org error: ${res.status}`)
+	if (!res.ok) {
+		throw new Error(`football-data.org error: ${res.status}`)
+	}
 	return res.json()
 }
 
-matchesRouter.get('/', async (_req, res) => {
+// Upcoming (все запланированные: TIMED + SCHEDULED)
+router.get('/matches', async (_req, res) => {
 	try {
 		const data = await fetchFromFootball('/matches?status=SCHEDULED,TIMED')
 		res.json({ matches: data.matches || [] })
@@ -30,7 +26,8 @@ matchesRouter.get('/', async (_req, res) => {
 	}
 })
 
-matchesRouter.get('/live', async (_req, res) => {
+// Live (идут прямо сейчас: IN_PLAY + PAUSED)
+router.get('/matches/live', async (_req, res) => {
 	try {
 		const data = await fetchFromFootball('/matches?status=IN_PLAY,PAUSED')
 		res.json({ matches: data.matches || [] })
@@ -39,4 +36,4 @@ matchesRouter.get('/live', async (_req, res) => {
 	}
 })
 
-export default matchesRouter
+export default router
