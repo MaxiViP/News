@@ -14,16 +14,6 @@ export async function fetchFromProviders(opts) {
         if (rss.length)
             return uniq(rss);
     }
-    // 2) Запасной вариант — NewsAPI (если ключ есть и не упёрлись в лимит)
-    // try {
-    //   const a = await fetchNewsApi({
-    //     category: opts.category,
-    //     country: (opts.country ?? 'ru') as any,
-    //     page: opts.page,
-    //     q: opts.q
-    //   } as any)
-    //   if (a.length) return uniq(a)
-    // } catch {}
     return [];
 }
 //# sourceMappingURL=index.js.map
