@@ -4,7 +4,7 @@ node_modules/
 # builds
 /backend/dist/
 /frontend/dist/
-!/backend/dist/routes/matches.js
+
 
 # env / секреты
 *.env
