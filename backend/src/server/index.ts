@@ -10,27 +10,61 @@ import { logger } from '../utils/logger.js'
 const app = express()
 
 // ✅ Разрешённые origin для CORS
-const allowed = [
-	'http://localhost:5173', // локалка
-	'https://newsandnews.ru', // фронт продакшен
+const allowedOrigins = [
+	'http://localhost:5173',
+	'https://newsandnews.ru',
+	'http://newsandnews.ru', // на всякий случай добавить http
 ]
 
-logger.info(`🔐 Allowed origins: ${allowed.join(', ')}`)
-
+// Более гибкая проверка CORS
 app.use(
 	cors({
-		origin(origin, cb) {
-			if (!origin || allowed.includes(origin)) {
-				return cb(null, true)
+		origin: function (origin, callback) {
+			// Разрешаем запросы без origin (например, из мобильных приложений, Postman)
+			if (!origin) return callback(null, true)
+
+			// Проверяем точное совпадение
+			if (allowedOrigins.includes(origin)) {
+				return callback(null, true)
 			}
+
+			// Также проверяем по домену (на случай поддоменов)
+			try {
+				const originHostname = new URL(origin).hostname
+				const isAllowed = allowedOrigins.some(allowed => {
+					try {
+						return new URL(allowed).hostname === originHostname
+					} catch {
+						return allowed.includes(originHostname)
+					}
+				})
+
+				if (isAllowed) {
+					return callback(null, true)
+				}
+			} catch (e) {
+				// Если не удалось распарсить URL, продолжаем
+			}
+
 			logger.warn(`❌ CORS blocked: ${origin}`)
-			return cb(new Error(`CORS blocked: ${origin}`))
+			callback(new Error(`CORS blocked: ${origin}`))
 		},
 		credentials: true,
 	})
 )
 
-// ✅ API healthcheck
+// ✅ Или более простое решение - разрешить все в продакшене
+app.use(
+	cors({
+		origin:
+			process.env.NODE_ENV === 'production'
+				? ['https://newsandnews.ru', 'http://newsandnews.ru']
+				: ['http://localhost:5173', 'https://newsandnews.ru'],
+		credentials: true,
+	})
+)
+
+// Остальной код без изменений...
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 
 // ✅ Football-data.org proxy
@@ -63,14 +97,12 @@ app.get('/api/matches/live', async (_req, res) => {
 	}
 })
 
-// ✅ Подключаем твои API роуты
 app.use('/api', apiRouter)
 
 // ✅ Отдаём фронтенд dist
 const distPath = path.resolve(process.cwd(), 'frontend/dist')
 if (fs.existsSync(distPath)) {
 	app.use(express.static(distPath))
-	// SPA fallback
 	app.use((_req, res) => {
 		res.sendFile(path.join(distPath, 'index.html'))
 	})
@@ -78,7 +110,6 @@ if (fs.existsSync(distPath)) {
 	logger.warn(`⚠️ Frontend dist not found at ${distPath}`)
 }
 
-// ✅ Запуск сервера
 const PORT = Number(process.env.PORT) || 8080
 app.listen(PORT, '0.0.0.0', () => {
 	logger.info(`✅ Server running on http://0.0.0.0:${PORT}`)
