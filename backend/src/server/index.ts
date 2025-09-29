@@ -13,37 +13,21 @@ const app = express()
 const allowedOrigins = [
 	'http://localhost:5173',
 	'https://newsandnews.ru',
-	'http://newsandnews.ru', // на всякий случай добавить http
+	'http://newsandnews.ru',
+	'https://maxivip-news-5c50.twc1.net', // ДОБАВЬТЕ ЭТОТ ДОМЕН
 ]
 
-// Более гибкая проверка CORS
+// ✅ ТОЛЬКО ОДИН CORS middleware
 app.use(
 	cors({
 		origin: function (origin, callback) {
-			// Разрешаем запросы без origin (например, из мобильных приложений, Postman)
+			// Разрешаем запросы без origin
 			if (!origin) return callback(null, true)
 
 			// Проверяем точное совпадение
 			if (allowedOrigins.includes(origin)) {
+				logger.info(`✅ CORS allowed: ${origin}`)
 				return callback(null, true)
-			}
-
-			// Также проверяем по домену (на случай поддоменов)
-			try {
-				const originHostname = new URL(origin).hostname
-				const isAllowed = allowedOrigins.some(allowed => {
-					try {
-						return new URL(allowed).hostname === originHostname
-					} catch {
-						return allowed.includes(originHostname)
-					}
-				})
-
-				if (isAllowed) {
-					return callback(null, true)
-				}
-			} catch (e) {
-				// Если не удалось распарсить URL, продолжаем
 			}
 
 			logger.warn(`❌ CORS blocked: ${origin}`)
@@ -53,18 +37,7 @@ app.use(
 	})
 )
 
-// ✅ Или более простое решение - разрешить все в продакшене
-app.use(
-	cors({
-		origin:
-			process.env.NODE_ENV === 'production'
-				? ['https://newsandnews.ru', 'http://newsandnews.ru']
-				: ['http://localhost:5173', 'https://newsandnews.ru'],
-		credentials: true,
-	})
-)
-
-// Остальной код без изменений...
+// ✅ API healthcheck
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 
 // ✅ Football-data.org proxy
