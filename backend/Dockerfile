@@ -8,8 +8,7 @@ RUN npm install
 # Копируем весь код
 COPY . .
 
-# 👇 Копируем .env.production внутрь контейнера как .env
-COPY .env.production .env
+ 
 
 # Собираем backend
 RUN npm run build -w backend

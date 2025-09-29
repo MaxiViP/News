@@ -10,24 +10,19 @@ import { logger } from '../utils/logger.js'
 
 const app = express()
 
-// ✅ CORS
-const allowed = (process.env.CORS_ORIGIN ?? '')
-	.split(',')
-	.map(s => s.trim())
-	.filter(Boolean)
-
-// Always allow localhost for dev
-if (!allowed.includes('http://localhost:5173')) {
-	allowed.push('http://localhost:5173')
-}
+// CORS
+const allowed = [
+	'http://localhost:5173',          // локалка
+	'https://newsandnews.ru',         // твой продакшн домен
+	'https://maxivip-news-9235.twc1.net', // timeweb-проксированный
+]
 
 app.use(
 	cors({
 		origin(origin, cb) {
-			if (!origin || allowed.length === 0 || allowed.includes(origin)) {
+			if (!origin || allowed.includes(origin)) {
 				return cb(null, true)
 			}
-			logger.warn(`❌ CORS blocked: ${origin}`)
 			return cb(new Error(`CORS blocked: ${origin}`))
 		},
 		credentials: true,
