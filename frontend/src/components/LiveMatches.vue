@@ -22,7 +22,7 @@
 						: 'bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover text-heading',
 				]"
 			>
-				🏃 Live
+				🏃
 			</button>
 			<button
 				@click="showFilters = !showFilters"
@@ -33,21 +33,21 @@
 						: 'bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover text-heading',
 				]"
 			>
-				⚙️ Фильтры
+				⚙️
 			</button>
 
 			<RouterLink
 				to="/widgets"
 				class="px-4 py-2 rounded-lg transition-all bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover text-heading"
 			>
-				📺 Виджеты
+				📺
 			</RouterLink>
 
 			<RouterLink
 				to="/tables"
 				class="px-4 py-2 rounded-lg transition-all bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover text-heading"
 			>
-				📊 Таблицы
+				📊
 			</RouterLink>
 		</div>
 

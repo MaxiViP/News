@@ -1,7 +1,17 @@
 <template>
-	<div id="container" class="mx-auto max-w-6xl px-4 sm:px-6">
+	<div id="container" class="mx-auto max-w-6xl 
+         px-2  
+         sm:px-0   
+         md:px-4   
+         lg:px-6   
+         xl:px-8    
+">
 		<header class="glass">
-			<div class="bar">
+			<div class="bar flex justify-between items-center gap-3 
+              px-2   <!-- мобилки -->
+              sm:px-0 
+              md:px-4 
+              lg:px-6">
 				<!-- логотип -->
 				<h1 class="logo">
 					<RouterLink to="/">
@@ -37,7 +47,7 @@
 							{{ showMatches ? '❌' : '⚽' }}
 						</button>
 					</div>
-					
+
 					<CurrencyRates />
 					<DarkToggle />
 
@@ -133,7 +143,7 @@ function closeMenu() {
 	justify-content: space-between;
 	gap: 12px;
 	align-items: center;
-	padding: 12px 16px;
+	/* padding: 12px 16px; */
 }
 
 .logo {
@@ -281,7 +291,7 @@ html.dark .menu {
 	gap: 8px;
 }
 .search input {
-	width: 260px;
+	width: 160px;
 	padding: 8px 10px;
 	border: 1px solid #e5e7eb;
 	border-radius: 12px;
@@ -314,15 +324,6 @@ html.dark .menu {
 	transform: translateY(-20px);
 }
 
-/* адаптив */
-@media (max-width: 600px) {
-	.logo-text {
-		width: 30px;
-	}
-	.logo {
-		font-size: 16px;
-	}
-}
 @media (max-width: 900px) {
 	.search {
 		display: none;
@@ -342,6 +343,21 @@ html.dark .menu {
 	.right {
 		order: 1;
 		margin-left: 0;
+	}
+}
+
+/* адаптив */
+@media (max-width: 600px) {
+	/* .container {
+		padding: 0;
+	}
+	 */
+	.logo-text {
+		display: none;
+		/* width: 30px; */
+	}
+	.logo {
+		font-size: 16px;
 	}
 }
 </style>
