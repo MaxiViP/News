@@ -3,30 +3,32 @@ import express from 'express'
 import cors from 'cors'
 import path from 'path'
 import fs from 'fs'
-import fetch from 'node-fetch'
 import { apiRouter } from '../routes/index.js'
 import { logger } from '../utils/logger.js'
+import { env } from './env.js'
 
 const app = express()
 
-// ✅ ВСЕ разрешённые origins
-const allowedOrigins = [
-	'http://localhost:5173',
-	'https://newsandnews.ru',
-	'http://newsandnews.ru',
-	'https://maxivip-news-5c50.twc1.net',
-	'https://maxivip-news-9235.twc1.net', // ДОБАВЬТЕ ЭТОТ!
-]
+// ✅ CORS: разрешаем только указанные в .env домены
+app.use(
+	cors({
+		origin(origin, callback) {
+			// если origin не указан (например, при curl) → пропускаем
+			if (!origin) return callback(null, true)
 
-// ✅ Простой CORS - разрешить всё для продакшена
-// ✅ Временное решение - разрешить всё
-app.use(cors({
-  origin: true, // разрешить ВСЕ origins
-  credentials: true,
-}))
+			if (env.CORS_ORIGIN.includes(origin)) {
+				return callback(null, true)
+			}
 
-// ✅ Добавьте логирование ВСЕХ запросов для отладки
-app.use((req, res, next) => {
+			logger.warn(`❌ CORS blocked for origin: ${origin}`)
+			return callback(new Error('Not allowed by CORS'))
+		},
+		credentials: true,
+	})
+)
+
+// ✅ Логирование всех запросов
+app.use((req, _res, next) => {
 	logger.info(`🌐 ${req.method} ${req.url} from origin: ${req.headers.origin}`)
 	next()
 })
@@ -34,43 +36,10 @@ app.use((req, res, next) => {
 // ✅ API healthcheck
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 
-// ✅ Football-data.org proxy
-const FOOTBALL_API = 'https://api.football-data.org/v4'
-const FOOTBALL_TOKEN = process.env.FOOTBALL_API_TOKEN ?? ''
-
-app.get('/api/matches', async (_req, res) => {
-	try {
-		logger.info('📡 Fetching matches from football-data.org')
-		const r = await fetch(`${FOOTBALL_API}/matches?status=SCHEDULED,TIMED`, {
-			headers: { 'X-Auth-Token': FOOTBALL_TOKEN },
-		})
-		const data = await r.json()
-		logger.info('✅ Matches fetched successfully')
-		res.json(data)
-	} catch (err: any) {
-		logger.error('❌ FD proxy error (SCHEDULED):', err?.message || err)
-		res.status(500).json({ error: 'proxy_failed', message: err.message })
-	}
-})
-
-app.get('/api/matches/live', async (_req, res) => {
-	try {
-		logger.info('📡 Fetching LIVE matches from football-data.org')
-		const r = await fetch(`${FOOTBALL_API}/matches?status=IN_PLAY,PAUSED`, {
-			headers: { 'X-Auth-Token': FOOTBALL_TOKEN },
-		})
-		const data = await r.json()
-		logger.info('✅ Live matches fetched successfully')
-		res.json(data)
-	} catch (err: any) {
-		logger.error('❌ FD proxy error (LIVE):', err?.message || err)
-		res.status(500).json({ error: 'proxy_failed', message: err.message })
-	}
-})
-
+// ✅ Подключение всех API роутов
 app.use('/api', apiRouter)
 
-// ✅ Отдаём фронтенд dist
+// ✅ Отдаём фронтенд dist (SPA fallback)
 const distPath = path.resolve(process.cwd(), 'frontend/dist')
 if (fs.existsSync(distPath)) {
 	app.use(express.static(distPath))
@@ -81,8 +50,8 @@ if (fs.existsSync(distPath)) {
 	logger.warn(`⚠️ Frontend dist not found at ${distPath}`)
 }
 
-const PORT = Number(process.env.PORT) || 8080
+const PORT = env.PORT
 app.listen(PORT, '0.0.0.0', () => {
 	logger.info(`✅ Server running on http://0.0.0.0:${PORT}`)
-	logger.info(`🔐 Allowed CORS origins: ${allowedOrigins.join(', ')}`)
+	logger.info(`🔐 Allowed CORS origins: ${env.CORS_ORIGIN.join(', ')}`)
 })
