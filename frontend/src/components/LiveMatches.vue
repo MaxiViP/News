@@ -221,7 +221,7 @@ const matches = ref<Match[]>([])
 const liveMatches = ref<Match[]>([])
 const upcomingMatches = ref<Match[]>([])
 
-const mode = ref<'scroll' | 'marquee'>('marquee')
+const mode = ref<'scroll' | 'marquee'>('scroll')
 const scrollFilter = ref<'all' | 'live' | 'upcoming'>('all')
 
 const lastUpdate = ref('')

@@ -1,7 +1,6 @@
 <template>
-	<div class="p-6 space-y-6">
+	<div class="px-6 space-y-6">
 		<!-- Селектор: национальные чемпионаты -->
-		<h2 class="text-lg font-semibold text-heading mb-2">🏟 Domestic Leagues</h2>
 		<div class="flex flex-wrap gap-2 mb-6">
 			<button
 				v-for="league in domesticLeagues"
@@ -28,13 +27,13 @@
 
 		<!-- Виджет -->
 		<div class="scoreaxis-widget">
-			<ScoreaxisWidget :leagueId="activeLeague" :inst="instId" />
+			<ScoreaxisWidget :leagueId="activeLeague" :inst="instId" :key="instId" />
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import ScoreaxisWidget from '../components/ScoreaxisWidget.vue'
 
 const buttonClasses = 'px-4 py-2 rounded-lg transition-all'
@@ -68,14 +67,24 @@ const europeanCups = [
 
 const activeLeague = ref(8) // по умолчанию Premier League
 
-// уникальный id для iframe (иначе ломается на мобилках)
+// уникальный id для iframe
 const instId = computed(() => `vue-league-widget-${activeLeague.value}`)
+
+// 🔄 форсируем перерисовку на мобильных
+watch(activeLeague, async () => {
+	await nextTick()
+})
+
+// при монтировании тоже принудительно обновляем
+onMounted(async () => {
+	await nextTick()
+})
 </script>
 
 <style scoped>
 :root {
-	--surface-alt-dark: oklch(0.68 0.04 257.34); /* вместо gray-700 */
-	--surface-hover-dark: oklch(0.63 0.05 257.34); /* вместо gray-600 */
+	--surface-alt-dark: oklch(0.68 0.04 257.34);
+	--surface-hover-dark: oklch(0.63 0.05 257.34);
 
 	--heading-light: #1f2937; /* gray-800 */
 	--heading-dark: #e5e7eb; /* gray-200 */
@@ -102,12 +111,13 @@ html.dark .dark\:hover\:bg-surface-hover:hover {
 	width: 100% !important;
 	max-width: 100% !important;
 	border: none;
+	min-height: 600px; /* фикс пустоты */
 }
 
 @media (max-width: 768px) {
 	.scoreaxis-widget iframe {
 		width: 100% !important;
-		height: auto !important;
+		min-height: 500px !important;
 	}
 }
 </style>

@@ -1,20 +1,34 @@
 <template>
   <div
     :id="`scoreaxis-widget-${inst}`"
-    style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:10px;background:#fff;width:100%"
+    class="scoreaxis-widget relative rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-surface p-2"
   >
+    <!-- Лоадер -->
+    <div
+      v-if="loading"
+      class="absolute inset-0 flex items-center justify-center bg-white dark:bg-surface z-10"
+    >
+      <div class="loader"></div>
+    </div>
+
+    <!-- iframe -->
     <iframe
       :src="`https://www.scoreaxis.com/widget/standings-widget/${leagueId}?autoHeight=1&inst=${inst}`"
       style="width:100%;border:none;transition:all 300ms ease"
+      @load="loading = false"
     ></iframe>
   </div>
-  <div style="font-size: 12px; font-family: Arial, sans-serif; text-align: left;">
-    Data provided by <a target="_blank" href="https://www.scoreaxis.com/">Scoreaxis</a>
+
+  <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+    Data provided by
+    <a target="_blank" href="https://www.scoreaxis.com/" class="underline hover:text-blue-500">
+      Scoreaxis
+    </a>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
 interface Props {
   leagueId: number
@@ -22,6 +36,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const loading = ref(true)
 
 onMounted(() => {
   window.addEventListener(
@@ -40,3 +55,31 @@ onMounted(() => {
   )
 })
 </script>
+
+<style scoped>
+/* Loader */
+.loader {
+  width: 32px;
+  height: 32px;
+  border: 4px solid #ccc;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* iframe всегда на всю ширину */
+.scoreaxis-widget iframe {
+  width: 100% !important;
+  min-height: 400px;
+}
+@media (max-width: 768px) {
+  .scoreaxis-widget iframe {
+    min-height: 500px;
+  }
+}
+</style>
