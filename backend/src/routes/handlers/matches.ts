@@ -1,12 +1,14 @@
+// src/routes/handlers/matches.ts
 import { Router } from 'express'
 import fetch from 'node-fetch'
 import { cache } from '../../core/cache.js'
 import type { FootballResponse } from '../../core/types'
+import { env } from '../../server/env.js' // <-- добавляем
 
 const router = Router()
 
 const FOOTBALL_API = 'https://api.football-data.org/v4'
-const API_KEY = process.env.FOOTBALL_API_TOKEN || ''
+const API_KEY = env.FOOTBALL_API_TOKEN // <-- вместо process.env
 
 // Универсальная функция для запросов с кэшем
 async function fetchFromFootball<T>(endpoint: string, cacheKey: string, ttlSec = 60): Promise<T> {
@@ -21,7 +23,7 @@ async function fetchFromFootball<T>(endpoint: string, cacheKey: string, ttlSec =
 	})
 }
 
-// 📅 Upcoming (SCHEDULED + TIMED)
+// 📅 Upcoming
 router.get('/', async (_req, res) => {
 	try {
 		const data = await fetchFromFootball<FootballResponse>('/matches?status=SCHEDULED,TIMED', 'matches_upcoming', 60)
@@ -31,7 +33,7 @@ router.get('/', async (_req, res) => {
 	}
 })
 
-// ⚡ Live (IN_PLAY + PAUSED)
+// ⚡ Live
 router.get('/live', async (_req, res) => {
 	try {
 		const data = await fetchFromFootball<FootballResponse>('/matches?status=IN_PLAY,PAUSED', 'matches_live', 20)
