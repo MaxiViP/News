@@ -8,7 +8,7 @@
 					'px-4 py-2 rounded-lg transition-all',
 					mode === 'scroll'
 						? 'bg-blue-600 text-white shadow-lg'
-						: 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200',
+						: 'bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover text-heading',
 				]"
 			>
 				📊Все
@@ -19,7 +19,7 @@
 					'px-4 py-2 rounded-lg transition-all',
 					mode === 'marquee'
 						? 'bg-blue-600 text-white shadow-lg'
-						: 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200',
+						: 'bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover text-heading',
 				]"
 			>
 				🏃 Live
@@ -30,7 +30,7 @@
 					'px-4 py-2 rounded-lg transition-all',
 					showFilters
 						? 'bg-purple-600 text-white shadow-lg'
-						: 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200',
+						: 'bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover text-heading',
 				]"
 			>
 				⚙️ Фильтры
@@ -38,14 +38,14 @@
 
 			<RouterLink
 				to="/widgets"
-				class="px-4 py-2 rounded-lg transition-all bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200"
+				class="px-4 py-2 rounded-lg transition-all bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover text-heading"
 			>
 				📺 Виджеты
 			</RouterLink>
 
 			<RouterLink
 				to="/tables"
-				class="px-4 py-2 rounded-lg transition-all bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200"
+				class="px-4 py-2 rounded-lg transition-all bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover text-heading"
 			>
 				📊 Таблицы
 			</RouterLink>
@@ -61,7 +61,7 @@
 						'px-3 py-1 rounded-lg text-sm',
 						scrollFilter === 'all'
 							? 'bg-blue-600 text-white'
-							: 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600',
+							: 'bg-gray-200 dark:bg-surface-alt text-heading hover:bg-gray-300 dark:hover:bg-surface-hover',
 					]"
 				>
 					📋 Все
@@ -72,7 +72,7 @@
 						'px-3 py-1 rounded-lg text-sm',
 						scrollFilter === 'live'
 							? 'bg-red-600 text-white'
-							: 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600',
+							: 'bg-gray-200 dark:bg-surface-alt text-heading hover:bg-gray-300 dark:hover:bg-surface-hover',
 					]"
 				>
 					🔴 Live
@@ -83,7 +83,7 @@
 						'px-3 py-1 rounded-lg text-sm',
 						scrollFilter === 'upcoming'
 							? 'bg-green-600 text-white'
-							: 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600',
+							: 'bg-gray-200 dark:bg-surface-alt text-heading hover:bg-gray-300 dark:hover:bg-surface-hover',
 					]"
 				>
 					⏰ Ожидание
@@ -97,17 +97,17 @@
 					class="shadow-lg border px-4 py-3 rounded-xl min-w-[300px] hover:scale-105 transition-transform duration-200 flex flex-col gap-2"
 					:class="
 						match.isLive
-							? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-700'
-							: 'bg-blue-50 dark:bg-blue-900/30 text-gray-900 dark:text-gray-100 border-blue-200 dark:border-blue-800'
+							? 'bg-white dark:bg-surface text-heading border-gray-200 dark:border-gray-700'
+							: 'bg-blue-50 dark:bg-blue-alt text-heading border-blue-200 dark:border-blue-800'
 					"
 				>
 					<!-- 🏆 Лига и время -->
 					<div class="flex items-center justify-between text-xs">
-						<span class="font-bold text-blue-600 dark:text-blue-400">
+						<span class="font-bold text-blue-600 dark:text-blue-800">
 							{{ getLeagueAbbr(match.league.name) }}
 						</span>
 						<span
-							:class="['text-sm font-semibold', match.isLive ? 'text-red-500' : 'text-green-600 dark:text-green-400']"
+							:class="['text-sm font-semibold', match.isLive ? 'text-red-500' : 'text-green-600 dark:text-green-800']"
 						>
 							{{ match.isLive ? 'LIVE' : formatMatchTime(match.fixture.date) }}
 						</span>
@@ -122,7 +122,7 @@
 						<span v-if="match.isLive" class="text-lg font-bold w-[60px] text-center">
 							{{ match.goals.home }} : {{ match.goals.away }}
 						</span>
-						<span v-else class="text-lg font-bold w-[60px] text-center text-gray-500 dark:text-gray-400">
+						<span v-else class="text-lg font-bold w-[60px] text-center text-gray-500 dark:text-gray-900">
 							VS
 						</span>
 
@@ -143,44 +143,46 @@
 		</div>
 
 		<!-- 🏃 Бегущая строка -->
-		<div
-			v-else
-			class="relative overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-3 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
-		>
-			<!-- 🔴 Заголовок -->
-			<div class="flex items-center mb-2">
-				<span v-if="hasLiveMatches" class="text-red-500 animate-pulse text-sm font-bold">🔴 LIVE</span>
-				<span v-else class="text-gray-500 dark:text-gray-400 text-sm font-bold">Нет активных матчей</span>
-				<span class="ml-2 text-xs text-gray-600 dark:text-gray-400">Обновлено: {{ lastUpdate }}</span>
-				<span class="ml-2 text-xs" :class="isDemoData ? 'text-orange-500' : 'text-blue-600 dark:text-blue-400'">
-					{{ currentSource }} {{ isDemoData ? '(demo)' : '' }}
-				</span>
-			</div>
+	<div
+	v-else
+	class="relative overflow-hidden rounded-xl p-3 border text-heading
+           bg-white dark:bg-surface
+           border-gray-200 dark:border-gray-700"
+>
+	<!-- 🔴 Заголовок -->
+	<div class="flex items-center mb-2">
+		<span v-if="hasLiveMatches" class="text-red-500 animate-pulse text-sm font-bold">🔴 LIVE</span>
+		<span v-else class="text-gray-500 dark:text-gray-600 text-sm font-bold">Нет активных матчей</span>
+		<span class="ml-2 text-xs text-gray-600 dark:text-gray-600">Обновлено: {{ lastUpdate }}</span>
+		<span class="ml-2 text-xs" :class="isDemoData ? 'text-orange-500' : 'text-blue-600 dark:text-blue-400'">
+			{{ currentSource }} {{ isDemoData ? '(demo)' : '' }}
+		</span>
+	</div>
 
-			<!-- 📢 Бегущая строка -->
-			<div class="overflow-hidden">
-				<div class="inline-flex animate-marquee gap-6" :style="{ animationDuration: marqueeDuration }">
-					<div
-						v-for="match in filteredLiveMatches"
-						:key="match.id"
-						class="flex items-center gap-3 px-4 py-2 border rounded-lg min-w-[300px]"
-						:class="'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-red-400'"
-					>
-						<span>{{ match.teams.home.name }}</span>
-						<span class="text-red-500 font-bold">
-							{{ match.goals.home }} : {{ match.goals.away }}
-						</span>
-						<span>{{ match.teams.away.name }}</span>
-					</div>
-				</div>
+	<!-- 📢 Бегущая строка -->
+	<div class="overflow-hidden">
+		<div class="inline-flex animate-marquee gap-6" :style="{ animationDuration: marqueeDuration }">
+			<div
+				v-for="match in filteredLiveMatches"
+				:key="match.id"
+				class="flex items-center gap-3 px-4 py-2 border rounded-lg min-w-[300px]
+                       bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+			>
+				<span>{{ match.teams.home.name }}</span>
+				<span class="text-red-500 font-bold">
+					{{ match.goals.home }} : {{ match.goals.away }}
+				</span>
+				<span>{{ match.teams.away.name }}</span>
 			</div>
 		</div>
+	</div>
+</div>
 
 		<!-- 🔧 Панель фильтров -->
 		<transition name="fade">
 			<div
 				v-if="showFilters"
-				class="mt-4 p-3 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-200 dark:border-gray-700"
+				class="mt-4 p-3 bg-gray-50 dark:bg-surface text-heading rounded-lg border border-gray-200 dark:border-gray-700"
 			>
 				<div class="flex flex-wrap gap-2 items-center">
 					<span class="text-sm font-medium">Фильтры:</span>
@@ -195,7 +197,7 @@
 					</label>
 				</div>
 
-				<div class="mt-2 text-xs text-gray-600 dark:text-gray-400">
+				<div class="mt-2 text-xs text-gray-600 dark:text-gray-800">
 					Всего: {{ filteredMatches.length }} | LIVE: {{ liveMatchesCount }} | Предстоящие: {{ upcomingMatchesCount }}
 				</div>
 			</div>
@@ -340,6 +342,35 @@ const getCountryName = (code: string) => {
 </script>
 
 <style>
+:root {
+	--surface-dark: oklch(0.71 0.04 257.34);
+	--surface-alt-dark: oklch(0.68 0.04 257.34);
+	--surface-hover-dark: oklch(0.63 0.05 257.34);
+	--blue-alt-dark: oklch(0.7 0.05 250);
+	--heading-light: #1f2937;
+	--heading-dark: #e5e7eb;
+}
+
+.text-heading {
+	color: var(--heading-light);
+}
+html.dark .text-heading {
+	color: var(--heading-dark);
+}
+
+html.dark .dark\:bg-surface {
+	background-color: var(--surface-dark) !important;
+}
+html.dark .dark\:bg-surface-alt {
+	background-color: var(--surface-alt-dark) !important;
+}
+html.dark .dark\:hover\:bg-surface-hover:hover {
+	background-color: var(--surface-hover-dark) !important;
+}
+html.dark .dark\:bg-blue-alt {
+	background-color: var(--blue-alt-dark) !important;
+}
+
 /* 🔁 Анимация для бегущей строки */
 @keyframes marquee {
 	0% {

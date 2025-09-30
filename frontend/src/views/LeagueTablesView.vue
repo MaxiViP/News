@@ -1,9 +1,7 @@
 <template>
 	<div class="p-6 space-y-6">
-		<h1 class="text-2xl font-bold text-gray-900 dark:text-white">📊 League Tables</h1>
-
 		<!-- Селектор: национальные чемпионаты -->
-		<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">🏟 Domestic Leagues</h2>
+		<h2 class="text-lg font-semibold text-heading mb-2">🏟 Domestic Leagues</h2>
 		<div class="flex flex-wrap gap-2 mb-6">
 			<button
 				v-for="league in domesticLeagues"
@@ -16,7 +14,7 @@
 		</div>
 
 		<!-- Селектор: еврокубки -->
-		<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">🌍 European Cups</h2>
+		<h2 class="text-lg font-semibold text-heading mb-2">🌍 European Cups</h2>
 		<div class="flex flex-wrap gap-2 mb-6">
 			<button
 				v-for="league in europeanCups"
@@ -29,17 +27,20 @@
 		</div>
 
 		<!-- Виджет -->
-		<ScoreaxisWidget :leagueId="activeLeague" :inst="instId" />
+		<div class="scoreaxis-widget">
+			<ScoreaxisWidget :leagueId="activeLeague" :inst="instId" />
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import ScoreaxisWidget from '../components/ScoreaxisWidget.vue'
 
 const buttonClasses = 'px-4 py-2 rounded-lg transition-all'
 const activeClasses = 'bg-blue-600 text-white shadow-lg'
-const inactiveClasses = 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
+const inactiveClasses =
+	'bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover'
 
 // 🏟 Национальные чемпионаты
 const domesticLeagues = [
@@ -61,10 +62,52 @@ const domesticLeagues = [
 const europeanCups = [
 	{ id: 2, name: 'Champions League' },
 	{ id: 5, name: 'Europa League' },
-  { id: 1538, name: 'Лига наций УЕФА' },
-  { id: 720, name: 'WC Qualification Europe' },
+	{ id: 1538, name: 'Лига наций УЕФА' },
+	{ id: 720, name: 'WC Qualification Europe' },
 ]
 
 const activeLeague = ref(8) // по умолчанию Premier League
-const instId = 'vue-league-widget' // уникальный id
+
+// уникальный id для iframe (иначе ломается на мобилках)
+const instId = computed(() => `vue-league-widget-${activeLeague.value}`)
 </script>
+
+<style scoped>
+:root {
+	--surface-alt-dark: oklch(0.68 0.04 257.34); /* вместо gray-700 */
+	--surface-hover-dark: oklch(0.63 0.05 257.34); /* вместо gray-600 */
+
+	--heading-light: #1f2937; /* gray-800 */
+	--heading-dark: #e5e7eb; /* gray-200 */
+}
+
+.text-heading {
+	color: var(--heading-light);
+}
+
+html.dark .text-heading {
+	color: var(--heading-dark);
+}
+
+html.dark .dark\:bg-surface-alt {
+	background-color: var(--surface-alt-dark) !important;
+}
+
+html.dark .dark\:hover\:bg-surface-hover:hover {
+	background-color: var(--surface-hover-dark) !important;
+}
+
+/* Адаптивность для iframe Scoreaxis */
+.scoreaxis-widget iframe {
+	width: 100% !important;
+	max-width: 100% !important;
+	border: none;
+}
+
+@media (max-width: 768px) {
+	.scoreaxis-widget iframe {
+		width: 100% !important;
+		height: auto !important;
+	}
+}
+</style>

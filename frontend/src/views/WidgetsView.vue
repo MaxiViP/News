@@ -1,9 +1,10 @@
 <template>
-	<div class="p-6 space-y-6">
-		<h1 class="text-2xl font-bold text-gray-900 dark:text-white">📺 Football Widgets</h1>
+	<div class="px-6 space-y-6">
+
+		<!-- <h1 class="text-2xl font-bold text-gray-900 dark:text-white">📺 Football Widgets</h1> -->
 
 		<!-- Matches -->
-		<div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+		<div class="bg-white dark:bg-surface p-4 rounded-lg shadow">
 			<!-- Tabs -->
 			<div class="flex gap-4 mb-4">
 				<button
@@ -93,7 +94,7 @@
 		</div>
 
 		<!-- ScoreBat iframe -->
-		<div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+		<div class="bg-white dark:bg-surface p-4 rounded-lg shadow">
 			<h2 class="text-lg font-semibold mb-2">ScoreBat Live</h2>
 			<iframe
 				src="https://www.scorebat.com/embed/livescore/"
@@ -109,7 +110,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 
-// ⚡ baseURL из env или по умолчанию
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080/api'
 
 interface Match {
@@ -128,7 +128,6 @@ const tab = ref<'upcoming' | 'live'>('upcoming')
 const loading = ref(false)
 const error = ref('')
 
-// 🔗 группировка по турнирам
 const groupedMatches = computed<Record<string, Match[]>>(() => {
 	const map: Record<string, Match[]> = {}
 	for (const m of matches.value) {
@@ -165,7 +164,7 @@ async function loadMatches() {
 
 onMounted(() => {
 	loadMatches()
-	const t = setInterval(loadMatches, 60000) // ⏱️ обновляем раз в минуту
+	const t = setInterval(loadMatches, 60000)
 	window.addEventListener('beforeunload', () => clearInterval(t))
 })
 
@@ -181,3 +180,19 @@ function formatDate(iso: string) {
 	})
 }
 </script>
+
+<style scoped>
+/* Переменные для фонов */
+:root {
+	--surface-light: #ffffff;
+	--surface-dark: oklch(0.71 0.04 257.34);
+}
+
+.bg-white {
+	background-color: var(--surface-light);
+}
+
+html.dark .bg-surface {
+	background-color: var(--surface-dark);
+}
+</style>

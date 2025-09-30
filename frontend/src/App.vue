@@ -30,16 +30,14 @@
 				<div class="right">
 					<!-- 🔘 Кнопка показать/скрыть матчи -->
 					<div>
-						<!-- 🔘 Кнопка -->
 						<button
 							@click="showMatches = !showMatches"
 							class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
 						>
-							{{ showMatches ? '❌ ' : '⚽ ' }}
+							{{ showMatches ? '❌' : '⚽' }}
 						</button>
-
 					</div>
-
+					
 					<CurrencyRates />
 					<DarkToggle />
 
@@ -66,10 +64,11 @@
 							<RouterLink to="/category/auto" @click="closeMenu">Авто</RouterLink>
 							<RouterLink to="/category/sports" @click="closeMenu">Спорт</RouterLink>
 							<RouterLink to="/category/news" @click="closeMenu">Новости</RouterLink>
-							<RouterLink to="/category/science" @click="closeMenu">Наука</RouterLink
-							><RouterLink to="/category/tech" @click="closeMenu">Технологии</RouterLink
-							><RouterLink to="/category/incidents" @click="closeMenu">Происшествия</RouterLink
-							><RouterLink to="/category/esports" @click="closeMenu">Киберспорт</RouterLink>
+							<RouterLink to="/category/science" @click="closeMenu">Наука</RouterLink>
+							<RouterLink to="/category/tech" @click="closeMenu">Технологии</RouterLink>
+							<RouterLink to="/category/incidents" @click="closeMenu">Происшествия</RouterLink>
+							<RouterLink to="/category/esports" @click="closeMenu">Киберспорт</RouterLink>
+
 							<hr />
 
 							<a href="#" target="_blank">📢 Telegram</a>
@@ -88,6 +87,7 @@
 			</div>
 		</transition>
 
+		<!-- Основной контент -->
 		<router-view />
 	</div>
 </template>
@@ -100,7 +100,7 @@ import LiveMatches from './components/LiveMatches.vue'
 
 const q = ref('')
 const menuOpen = ref(false)
-const showMatches = ref(false) // 🔑 Управление видимостью матчей
+const showMatches = ref(false)
 
 function closeMenu() {
 	menuOpen.value = false
@@ -171,9 +171,33 @@ function closeMenu() {
 	margin-left: auto;
 	display: flex;
 	align-items: center;
-
 	gap: 20px;
 	position: relative;
+}
+
+/* 🔗 Кнопки навигации */
+.nav-btn {
+	padding: 8px 16px;
+	border-radius: 8px;
+	background: #e5e7eb;
+	color: #1f2937;
+	transition: all 0.2s ease;
+}
+.nav-btn:hover {
+	background: #d1d5db;
+}
+html.dark .nav-btn {
+	background: #374151;
+	color: #e5e7eb;
+}
+html.dark .nav-btn:hover {
+	background: #4b5563;
+}
+/* активная ссылка */
+.nav-active {
+	background: #2563eb !important;
+	color: #fff !important;
+	font-weight: 600;
 }
 
 /* бургер */
@@ -193,8 +217,6 @@ function closeMenu() {
 	border-radius: 2px;
 	transition: 0.3s;
 }
-
-/* анимация в крестик */
 .burger.open span:nth-child(1) {
 	transform: translateY(7.5px) rotate(45deg);
 }
@@ -205,6 +227,7 @@ function closeMenu() {
 	transform: translateY(-7.5px) rotate(-45deg);
 }
 
+/* меню */
 .menu {
 	position: absolute;
 	top: 100%;
@@ -218,21 +241,14 @@ function closeMenu() {
 	min-width: 180px;
 	z-index: 100;
 	padding: 8px 0;
-	transition:
-		background 0.3s ease,
-		color 0.3s ease;
-
-	/* фон под тему */
 	background: #fff;
-	max-height: 70vh; /* ограничим высоту */
-	overflow-y: auto; /* добавляем скролл */
+	max-height: 70vh;
+	overflow-y: auto;
 }
-
 html.dark .menu {
-	background: #1f2937; /* gray-800 */
+	background: #1f2937;
 	border-color: #374151;
 }
-
 .menu a {
 	padding: 10px 16px;
 	text-decoration: none;
@@ -240,7 +256,7 @@ html.dark .menu {
 	transition: background 0.2s;
 }
 .menu a:hover {
-	background: rgba(37, 99, 235, 0.08); /* нейтральный hover */
+	background: rgba(37, 99, 235, 0.08);
 }
 .menu hr {
 	border: none;
@@ -289,17 +305,16 @@ html.dark .menu {
 .slide-down-leave-active {
 	transition: all 0.3s ease;
 }
-
 .slide-down-enter-from {
 	opacity: 0;
 	transform: translateY(-20px);
 }
-
 .slide-down-leave-to {
 	opacity: 0;
 	transform: translateY(-20px);
 }
 
+/* адаптив */
 @media (max-width: 600px) {
 	.logo-text {
 		width: 30px;
@@ -308,28 +323,22 @@ html.dark .menu {
 		font-size: 16px;
 	}
 }
-
 @media (max-width: 900px) {
 	.search {
 		display: none;
 	}
 }
-
-/* 🔘 Адаптивность кнопки матчей */
 @media (max-width: 768px) {
 	.bar {
 		flex-wrap: wrap;
 		gap: 8px;
 	}
-
-	/* Переносим кнопку матчей на новую строку на мобильных */
 	.bar > button {
 		order: 2;
 		width: 100%;
 		text-align: center;
 		margin-top: 8px;
 	}
-
 	.right {
 		order: 1;
 		margin-left: 0;
