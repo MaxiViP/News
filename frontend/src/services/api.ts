@@ -1,11 +1,14 @@
 import axios from 'axios'
 
+// ⚡ Жёстко задаём прод-адрес, а локально будет fallback
+const PROD_BASE = 'https://maxivip-news-cee1.twc1.net/api'
+const LOCAL_BASE = 'http://localhost:8080/api'
+
+export const API_BASE = window.location.hostname === 'localhost' ? LOCAL_BASE : PROD_BASE
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE,
+	baseURL: API_BASE,
 })
 
-export const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080/api'
-
-
- // Для отладки:
-console.log('API baseURL:', api.defaults.baseURL)
+// Для отладки
+console.log('🌐 API baseURL:', API_BASE)
