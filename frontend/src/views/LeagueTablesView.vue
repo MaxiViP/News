@@ -1,5 +1,5 @@
 <template>
-	<div class="px-6 space-y-6">
+	<div class="space-y-6">
 		<!-- Селектор: национальные чемпионаты -->
 		<div class="flex flex-wrap gap-2 mb-6">
 			<button
@@ -38,8 +38,7 @@ import ScoreaxisWidget from '../components/ScoreaxisWidget.vue'
 
 const buttonClasses = 'px-4 py-2 rounded-lg transition-all'
 const activeClasses = 'bg-blue-600 text-white shadow-lg'
-const inactiveClasses =
-	'bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover'
+const inactiveClasses = 'bg-gray-200 dark:bg-surface-alt hover:bg-gray-300 dark:hover:bg-surface-hover'
 
 // 🏟 Национальные чемпионаты
 const domesticLeagues = [

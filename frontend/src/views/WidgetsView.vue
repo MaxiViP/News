@@ -1,5 +1,5 @@
 <template>
-	<div class="px-6 space-y-6">
+	<div class="  space-y-6">
 
 		<!-- <h1 class="text-2xl font-bold text-gray-900 dark:text-white">📺 Football Widgets</h1> -->
 
@@ -13,7 +13,7 @@
 						'px-4 py-2 rounded-lg transition-all',
 						tab === 'upcoming'
 							? 'bg-blue-600 text-white shadow-lg'
-							: 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600',
+							: 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-white',
 					]"
 				>
 					⚽ Upcoming
@@ -24,7 +24,7 @@
 						'px-4 py-2 rounded-lg transition-all',
 						tab === 'live'
 							? 'bg-red-600 text-white shadow-lg'
-							: 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600',
+							: 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-white',
 					]"
 				>
 					🔴 Live
@@ -36,7 +36,7 @@
 				<h2 class="text-lg font-semibold">
 					{{ tab === 'upcoming' ? '⚽ Upcoming Matches' : '🔴 Live Matches' }}
 				</h2>
-				<div class="text-xs text-gray-500 dark:text-gray-400">
+				<div class="text-xs text-gray-500 dark:text-gray-800">
 					{{ lastUpdated ? `Updated: ${lastUpdated}` : 'Loading…' }}
 				</div>
 			</div>
@@ -49,7 +49,7 @@
 					class="rounded border border-gray-200 dark:border-gray-700"
 				>
 					<!-- Заголовок турнира -->
-					<div class="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-700/50 font-semibold">
+					<div class="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-600 text-white font-semibold">
 						<img
 							v-if="matches[0]?.competition?.emblem"
 							:src="matches[0].competition.emblem"
@@ -88,13 +88,13 @@
 				</div>
 			</div>
 
-			<div v-else class="text-gray-500 dark:text-gray-400">
+			<div v-else class="text-gray-500 dark:text-gray-700">
 				No {{ tab === 'upcoming' ? 'upcoming' : 'live' }} matches
 			</div>
 		</div>
 
 		<!-- ScoreBat iframe -->
-		<div class="bg-white dark:bg-surface p-4 rounded-lg shadow">
+		<div class="bg-white dark:bg-surface   rounded-lg shadow">
 			<h2 class="text-lg font-semibold mb-2">ScoreBat Live</h2>
 			<iframe
 				src="https://www.scorebat.com/embed/livescore/"

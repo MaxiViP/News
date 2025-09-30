@@ -8,7 +8,7 @@
 		<!-- 🔄 Конвертер -->
 		<section
 			class="converter p-6 rounded-xl shadow-lg 
-			       bg-white dark:bg-gray-800 
+			       bg-white dark:bg-gray-500 
 			       text-gray-900 dark:text-gray-100
 			       transition-all duration-300"
 		>
@@ -372,7 +372,7 @@ async function loadBtcChart() {
 									new Intl.NumberFormat('ru-RU', {
 										notation: 'compact',
 										maximumFractionDigits: 1,
-									}).format(value as number) + '₽',
+									}).format(value as number),
 							},
 						},
 					},
