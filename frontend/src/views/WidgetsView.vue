@@ -1,7 +1,7 @@
 <template>
 	<div class="space-y-6">
 		<!-- Matches -->
-		<div class="bg-white dark:bg-surface p-4 rounded-lg shadow">
+		<div class="bg-white dark:bg-surface p-0 rounded-lg shadow">
 			<!-- Tabs -->
 			<div class="flex flex-wrap gap-2 sm:gap-4 mb-4">
 				<button
