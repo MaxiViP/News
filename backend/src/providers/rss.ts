@@ -100,7 +100,7 @@ const FEEDS: Record<Category, string[]> = {
 }
 
 const parser = new Parser({
-	timeout: 150000,
+	timeout: 15000,
 	headers: { 'User-Agent': 'NewsPortal/1.0 (+contact: you@example.com)' },
 })
 
@@ -178,7 +178,7 @@ export async function fetchRss(opts: {
 	}
 
 	// 📄 Пагинация
-	const PAGE = 60
+	const PAGE = 20
 	const page = Math.max(1, opts.page ?? 1)
 	const start = (page - 1) * PAGE
 	return uniq.slice(start, start + PAGE)

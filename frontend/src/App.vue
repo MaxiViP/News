@@ -259,7 +259,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 	align-items: center;
 	gap: 12px;
 	padding: 6px 16px; /* как у match-toggle */
-	border-radius: 8px;
+	border-radius: 12px;
 	color: #fff; /* белый текст */
 	font-weight: 600;
 	transition: all 0.3s ease;
