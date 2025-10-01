@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="currency-page max-w-4xl mx-auto p-6 space-y-10 
+		class="currency-page max-w-4xl mx-auto p-0 space-y-10 
 		       text-gray-900 dark:text-gray-100 
 		       bg-white dark:bg-gray-900 
 		       min-h-screen transition-all duration-300"

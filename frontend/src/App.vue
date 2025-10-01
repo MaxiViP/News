@@ -28,6 +28,8 @@
 
 				<!-- блок справа -->
 				<div class="right">
+					<WeatherDate />
+
 					<!-- 🔘 Кнопка показать/скрыть матчи -->
 					<div>
 						<button
@@ -42,42 +44,43 @@
 					<DarkToggle />
 
 					<!-- 🔎 поиск -->
-				<form class="search relative flex items-center" @submit.prevent="onSearchClick">
-	<input
-		ref="searchInput"
-		v-model="q"
-		type="search"
-		:placeholder="expanded ? 'Выберите категорию' : ''"
-		class="search-input transition-all duration-300 ease-in-out border rounded-lg py-2 pl-3 pr-10 dark:bg-gray-500 dark:text-white"
-		:class="expanded ? 'expanded border-blue-500 ring-2 ring-blue-400' : 'border-gray-300 dark:border-gray-600'"
-	/>
+					<form class="search relative flex items-center" @submit.prevent="onSearchClick">
+						<input
+							ref="searchInput"
+							v-model="q"
+							type="search"
+							:placeholder="expanded ? 'Выберите категорию' : ''"
+							class="search-input transition-all duration-300 ease-in-out border rounded-lg py-2 pl-3 pr-10 dark:bg-gray-500 dark:text-white"
+							:class="
+								expanded ? 'expanded border-blue-500 ring-2 ring-blue-400' : 'border-gray-300 dark:border-gray-600'
+							"
+						/>
 
-	<!-- кнопка-лупа -->
-	<button
-		type="button"
-		@click="onSearchClick"
-		:class="[
-			'absolute right-0 flex items-center justify-center px-3 rounded-md transition',
-			searchSuccess ? 'search-success' : 'text-gray-500 hover:text-blue-600',
-		]"
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			class="h-5 w-5"
-			fill="none"
-			viewBox="0 0 24 24"
-			stroke="currentColor"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M21 21l-4.35-4.35M16.65 10.65a6 6 0 11-12 0 6 6 0 0112 0z"
-			/>
-		</svg>
-	</button>
-</form>
-
+						<!-- кнопка-лупа -->
+						<button
+							type="button"
+							@click="onSearchClick"
+							:class="[
+								'absolute right-0 flex items-center justify-center px-3 rounded-md transition',
+								searchSuccess ? 'search-success' : 'text-gray-500 hover:text-blue-600',
+							]"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M21 21l-4.35-4.35M16.65 10.65a6 6 0 11-12 0 6 6 0 0112 0z"
+								/>
+							</svg>
+						</button>
+					</form>
 
 					<!-- бургер -->
 					<div class="burger" :class="{ open: menuOpen }" @click="menuOpen = !menuOpen">
@@ -131,6 +134,7 @@ import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNews } from './stores/news'
 
+import WeatherDate from './components/WeatherDate.vue'
 import DarkToggle from './components/DarkToggle.vue'
 import CurrencyRates from './components/CurrencyRates.vue'
 import LiveMatches from './components/LiveMatches.vue'
@@ -197,6 +201,8 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 }
 
 .match-toggle {
+	padding: 6px 8px;
+	border-radius: 12px;
 	transition: all 0.3s ease;
 	box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); /* лёгкая тень */
 }
@@ -342,7 +348,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 	margin-left: auto;
 	display: flex;
 	align-items: center;
-	gap: 20px;
+	gap: 16px;
 	position: relative;
 }
 
@@ -491,7 +497,7 @@ html.dark .menu {
 }
 
 .search button {
-	padding: 8px 12px;
+	padding: 8px 10px;
 	border: none;
 	border-radius: 12px;
 	background: #2563eb;
@@ -520,6 +526,9 @@ html.dark .menu {
 @media (max-width: 900px) {
 	.search {
 		margin-left: 25px;
+		position: relative;
+    flex: 1; /* занимает всё доступное место */
+    max-width: 200px; /* ограничение */
 	}
 
 	.search-input {
@@ -540,7 +549,11 @@ html.dark .menu {
 	}
 
 	.right {
+		gap: 12px;
 		margin-right: 6px;
+	}
+	.logo {
+		font-size: 16px;
 	}
 
 	.logo a {
@@ -562,10 +575,21 @@ html.dark .menu {
 	.right {
 		order: 1;
 		margin-left: 0;
+		gap: 8px;
 	}
 }
 
 @media (max-width: 600px) {
+.logo a {
+	padding: 0;
+	gap: 0;
+}
+
+.bar {
+    gap: 2px;
+  }
+
+
 	.logo-text {
 		display: none;
 		/* width: 30px; */

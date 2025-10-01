@@ -24,8 +24,9 @@ const { isDark, toggle } = useDark()
 
 .dark-toggle {
 	cursor: pointer;
-	padding: 0.5rem 0.5 rem;
-	border-radius: 6px;
+	padding: 6px 8px;
+	margin-right: 10px;
+	border-radius: 12px;
 	border: 1px solid var(--c-border, #ccc);
 	background: var(--c-bg, #f9f9f9);
 	color: inherit;
