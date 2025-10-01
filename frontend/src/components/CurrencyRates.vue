@@ -36,9 +36,46 @@ onMounted(loadRates)
 
 <style scoped>
 .currency-rates {
-	line-height: 1.4;
-	padding: 0.5rem 1rem;
-	border: 1px solid #e5e7eb;;
-	border-radius: 12px;
+  line-height: 1;
+  padding: 0.5rem 0.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  color: #111;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
+
+/* 🌙 поддержка dark */
+html.dark .currency-rates {
+  background: #1f2937;
+  border-color: #374151;
+  color: #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* ✨ hover */
+.currency-rates:hover {
+  transform: translateY(-2px) scale(1.03);
+  border-color: #3b82f6;
+  box-shadow: 0 6px 14px rgba(59, 130, 246, 0.4);
+}
+
+/* 🔥 focus (для доступности) */
+.currency-rates:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5), 0 8px 16px rgba(59, 130, 246, 0.6);
+  transform: scale(1.04);
+}
+
+/* ⚡ active */
+.currency-rates:active {
+  transform: scale(0.97);
+  border-color: #1e40af;
+  box-shadow: 0 4px 8px rgba(30, 64, 175, 0.5);
+}
+
 </style>

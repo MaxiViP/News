@@ -4,7 +4,7 @@ import { fetchFromProviders } from '../../providers/index.js'
 import { cache } from '../../core/cache.js'
 
 const QuerySchema = z.object({
-	category: z.enum(['politics', 'economy', 'news', 'science', 'tech', 'sports', 'incidents', 'auto', 'esports']),
+	category: z.enum(['news', 'economy', 'politics', 'science', 'tech', 'sports', 'incidents', 'auto', 'esports']),
 	country: z.string().default('ru'),
 	page: z.coerce.number().min(1).default(1),
 	q: z.string().optional(),

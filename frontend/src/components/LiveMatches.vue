@@ -1,5 +1,5 @@
 <template>
-	<div class="pb-4">
+	<div class="pb-0">
 		<!-- 🔘 Переключатель режимов -->
 		<div class="flex gap-4 mb-4 flex-wrap">
 			<button
@@ -49,13 +49,9 @@
 			>
 				📊
 			</RouterLink>
-		</div>
-
-		<!-- 📊 Горизонтальная прокрутка -->
-		<div v-if="mode === 'scroll'">
 			<!-- 🔘 Переключатель подрежимов -->
 			<div class="flex gap-2 mb-3">
-				<button
+				<!-- <button
 					@click="scrollFilter = 'all'"
 					:class="[
 						'px-3 py-1 rounded-lg text-sm',
@@ -65,7 +61,7 @@
 					]"
 				>
 					📋 Все
-				</button>
+				</button> -->
 				<button
 					@click="scrollFilter = 'live'"
 					:class="[
@@ -89,7 +85,10 @@
 					⏰ Ожидание
 				</button>
 			</div>
+		</div>
 
+		<!-- 📊 Горизонтальная прокрутка -->
+		<div v-if="mode === 'scroll'">
 			<div class="flex overflow-x-auto gap-4 pb-3 scrollbar-hide">
 				<div
 					v-for="match in filteredScrollMatches"
@@ -102,7 +101,7 @@
 					"
 				>
 					<!-- 🏆 Лига и время -->
-					<div class="flex items-center justify-between text-xs">
+					<div class="flex items-center justify-between text-s">
 						<span class="font-bold text-blue-600 dark:text-blue-800">
 							{{ getLeagueAbbr(match.league.name) }}
 						</span>
@@ -122,9 +121,7 @@
 						<span v-if="match.isLive" class="text-lg font-bold w-[60px] text-center">
 							{{ match.goals.home }} : {{ match.goals.away }}
 						</span>
-						<span v-else class="text-lg font-bold w-[60px] text-center text-gray-500 dark:text-gray-900">
-							VS
-						</span>
+						<span v-else class="text-lg font-bold w-[60px] text-center text-gray-500 dark:text-gray-900"> VS </span>
 
 						<span class="text-sm font-medium truncate w-[100px] text-right">
 							{{ match.teams.away.name }}
@@ -143,40 +140,35 @@
 		</div>
 
 		<!-- 🏃 Бегущая строка -->
-	<div
-	v-else
-	class="relative overflow-hidden rounded-xl p-3 border text-heading
-           bg-white dark:bg-surface
-           border-gray-200 dark:border-gray-700"
->
-	<!-- 🔴 Заголовок -->
-	<div class="flex items-center mb-2">
-		<span v-if="hasLiveMatches" class="text-red-500 animate-pulse text-sm font-bold">🔴 LIVE</span>
-		<span v-else class="text-gray-500 dark:text-gray-600 text-sm font-bold">Нет активных матчей</span>
-		<span class="ml-2 text-xs text-gray-600 dark:text-gray-600">Обновлено: {{ lastUpdate }}</span>
-		<span class="ml-2 text-xs" :class="isDemoData ? 'text-orange-500' : 'text-blue-600 dark:text-blue-400'">
-			{{ currentSource }} {{ isDemoData ? '(demo)' : '' }}
-		</span>
-	</div>
-
-	<!-- 📢 Бегущая строка -->
-	<div class="overflow-hidden">
-		<div class="inline-flex animate-marquee gap-6" :style="{ animationDuration: marqueeDuration }">
-			<div
-				v-for="match in filteredLiveMatches"
-				:key="match.id"
-				class="flex items-center gap-3 px-4 py-2 border rounded-lg min-w-[300px]
-                       bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-			>
-				<span>{{ match.teams.home.name }}</span>
-				<span class="text-red-500 font-bold">
-					{{ match.goals.home }} : {{ match.goals.away }}
+		<div
+			v-else
+			class="relative overflow-hidden rounded-xl p-3 border text-heading bg-white dark:bg-surface border-gray-200 dark:border-gray-700"
+		>
+			<!-- 🔴 Заголовок -->
+			<div class="flex items-center mb-2">
+				<span v-if="hasLiveMatches" class="text-red-500 animate-pulse text-sm font-bold">🔴 LIVE</span>
+				<span v-else class="text-gray-500 dark:text-gray-600 text-sm font-bold">Нет активных матчей</span>
+				<span class="ml-2 text-xs text-gray-600 dark:text-gray-600">Обновлено: {{ lastUpdate }}</span>
+				<span class="ml-2 text-xs" :class="isDemoData ? 'text-orange-500' : 'text-blue-600 dark:text-blue-400'">
+					{{ currentSource }} {{ isDemoData ? '(demo)' : '' }}
 				</span>
-				<span>{{ match.teams.away.name }}</span>
+			</div>
+
+			<!-- 📢 Бегущая строка -->
+			<div class="overflow-hidden">
+				<div class="inline-flex animate-marquee gap-6" :style="{ animationDuration: marqueeDuration }">
+					<div
+						v-for="match in filteredLiveMatches"
+						:key="match.id"
+						class="flex items-center gap-3 px-4 py-2 border rounded-lg min-w-[300px] bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+					>
+						<span>{{ match.teams.home.name }}</span>
+						<span class="text-red-500 font-bold"> {{ match.goals.home }} : {{ match.goals.away }} </span>
+						<span>{{ match.teams.away.name }}</span>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
 
 		<!-- 🔧 Панель фильтров -->
 		<transition name="fade">
@@ -230,18 +222,18 @@ const isDemoData = ref(false)
 
 /* ====== Фильтры ====== */
 const showFilters = ref(false)
-const selectedCountries = ref<string[]>(['England', 'Spain', 'Italy', 'Germany', 'France', 'Russia'])
+const selectedCountries = ref<string[]>(['Europe', 'World','Russia', 'England', 'Spain', 'Italy', 'Germany', 'France'])
 const availableCountries = ref([
+	'Europe',
+	'World',
+	'Russia',
 	'England',
 	'Spain',
 	'Italy',
 	'Germany',
 	'France',
-	'Russia',
 	'Portugal',
 	'Netherlands',
-	'Europe',
-	'World',
 ])
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080/api'
@@ -319,10 +311,9 @@ const hasLiveMatches = computed(() => liveMatchesCount.value > 0)
 const marqueeDuration = computed(() => `${Math.max(15, filteredLiveMatches.value.length * 5)}s`)
 
 /* ====== HELPERS ====== */
-const formatMatchTime = (d: string) =>
-	new Date(d).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+const formatMatchTime = (d: string) => new Date(d).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
 
-const getLeagueAbbr = (name: string) => name.slice(0, 3).toUpperCase()
+const getLeagueAbbr = (name: string) => name.slice(0).toUpperCase()
 
 const getCountryName = (code: string) => {
 	const names: Record<string, string> = {

@@ -6,13 +6,6 @@ import type { Article, Category } from '../core/types.js'
 
 /** Карта лент по категориям (UTF-8 ленты) */
 const FEEDS: Record<Category, string[]> = {
-	politics: ['https://ria.ru/export/rss2/politics/index.xml', 'https://www.mk.ru/rss/politics/index.xml'],
-	economy: [
-		'https://ria.ru/export/rss2/economy/index.xml',
-		'https://rssexport.rbc.ru/rbcnews/economics/20/full.rss',
-		'https://govoritmoskva.ru/rss/news/2/',
-		'https://www.mk.ru/rss/economics/index.xml',
-	],
 	news: [
 		'https://ria.ru/export/rss2/culture/index.xml',
 		'https://news.rambler.ru/starlife/',
@@ -21,7 +14,45 @@ const FEEDS: Record<Category, string[]> = {
 		'https://rssexport.rbc.ru/rbcnews/news/30/full.rss',
 		'http://www.infox.ru/themes/auto/rss.xml',
 		'https://www.mk.ru/rss/news/index.xml',
+
+		'https://news-rss.ru/katalog-rss-kanalov/avto/',
+		' http://www.gazeta.ru/export/rss/autonews.xml',
+		'https://www.autostat.ru/news/rss/3/',
+		' http://www.gazeta.ru/export/rss/auto.xml',
+
+		'https://www.goha.ru/feeds/rss',
+		'cyber.sports.ru/docs/rss',
+		'https://www.goha.ru/rss/:Epic Games',
+		'https://www.goha.ru/rss/:VALORANT',
+		'https://www.goha.ru/rss/:Стратегия',
+		'https://www.goha.ru/rss/:World of Warcraft',
+		'https://www.goha.ru/rss/:Sony',
+		'https://www.goha.ru/rss/:Киберспорт',
+		'https://www.goha.ru/rss/:League of Legends',
+		'https://www.goha.ru/rss/:Ubisoft',
+		'https://www.goha.ru/rss/:PUBG',
+		'https://www.goha.ru/rss/:The International 2025',
+
+		'https://ria.ru/export/rss2/science/index.xml',
+		'https://www.mk.ru/rss/science/index.xml',
+		'https://govoritmoskva.ru/rss/news/23/',
+
+		'https://habr.com/ru/rss/news/?fl=ru',
+		'https://govoritmoskva.ru/rss/news/5/',
+
+		'https://rsport.ria.ru/export/rss2/archive/index.xml',
+		'https://rssexport.rbc.ru/rbcnews/sport/20/full.rss',
+		'https://govoritmoskva.ru/rss/news/10/',
+		'https://www.mk.ru/rss/sport/index.xml',
 	],
+	politics: ['https://ria.ru/export/rss2/politics/index.xml', 'https://www.mk.ru/rss/politics/index.xml'],
+	economy: [
+		'https://ria.ru/export/rss2/economy/index.xml',
+		'https://rssexport.rbc.ru/rbcnews/economics/20/full.rss',
+		'https://govoritmoskva.ru/rss/news/2/',
+		'https://www.mk.ru/rss/economics/index.xml',
+	],
+
 	science: [
 		'https://ria.ru/export/rss2/science/index.xml',
 		'https://www.mk.ru/rss/science/index.xml',
@@ -38,12 +69,6 @@ const FEEDS: Record<Category, string[]> = {
 		'https://ria.ru/export/rss2/incidents/index.xml',
 		'https://www.mk.ru/rss/incident/index.xml',
 		'https://govoritmoskva.ru/rss/news/7/',
-		// 'https://lenta.ru/rss',
-		// 'https://lenta.ru/rss',
-		// 'https://lenta.ru/rss',
-		// 'https://lenta.ru/rss',
-		// 'https://lenta.ru/rss',
-		// 'https://lenta.ru/rss',
 	],
 	auto: [
 		'https://news-rss.ru/katalog-rss-kanalov/avto/',
@@ -75,7 +100,7 @@ const FEEDS: Record<Category, string[]> = {
 }
 
 const parser = new Parser({
-	timeout: 15000,
+	timeout: 150000,
 	headers: { 'User-Agent': 'NewsPortal/1.0 (+contact: you@example.com)' },
 })
 
@@ -153,7 +178,7 @@ export async function fetchRss(opts: {
 	}
 
 	// 📄 Пагинация
-	const PAGE = 20
+	const PAGE = 60
 	const page = Math.max(1, opts.page ?? 1)
 	const start = (page - 1) * PAGE
 	return uniq.slice(start, start + PAGE)

@@ -5,14 +5,29 @@ import WidgetsView from './views/WidgetsView.vue'
 import LeagueTablesView from './views/LeagueTablesView.vue'
 
 const routes = [
-	{ path: '/', redirect: '/category/politics' },
-	{ path: '/category/:category', component: CategoryView },
-	{ path: '/search/:q?', component: () => import('./views/SearchView.vue') },
-	{ path: '/contacts', component: () => import('./views/ContactsView.vue') },
-	{ path: '/currency', component: () => import('./views/CurrencyPage.vue') },
+	// 📰 редирект на новости по умолчанию
+	{ path: '/', redirect: '/category/news' },
+
+	// категории
+	{ path: '/category/:category', name: 'category', component: CategoryView },
+
+	// поиск
+	{ path: '/search/:q?', name: 'search', component: () => import('./views/SearchView.vue') },
+
+	// контакты
+	{ path: '/contacts', name: 'contacts', component: () => import('./views/ContactsView.vue') },
+
+	// валюта
+	{ path: '/currency', name: 'currency', component: () => import('./views/CurrencyPage.vue') },
+
+	// матчи
 	{ path: '/matches', name: 'matches', component: LiveMatches },
+
+	// виджеты
 	{ path: '/widgets', name: 'widgets', component: WidgetsView },
-	{ path: '/tables', name: 'tables', component: LeagueTablesView }, // 🔥 новая страница
+
+	// таблицы
+	{ path: '/tables', name: 'tables', component: LeagueTablesView },
 ]
 
 export default createRouter({
