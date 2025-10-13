@@ -5,18 +5,20 @@ import path from 'path';
 import fs from 'fs';
 import { apiRouter } from '../routes/index.js';
 import { logger } from '../utils/logger.js';
+import { env } from './env.js';
 const app = express();
-// ✅ ВСЕ разрешённые origins
-const allowedOrigins = [
-    'http://localhost:5173',
-    'https://newsandnews.ru',
-    'http://newsandnews.ru',
-    'https://maxivip-news-5c50.twc1.net',
-    'https://maxivip-news-9235.twc1.net',
-];
-// ✅ Простой CORS (временно разрешаем все origins)
+// ✅ CORS: разрешаем только указанные в .env домены
 app.use(cors({
-    origin: true,
+    origin(origin, callback) {
+        // если origin не указан (например, при curl) → пропускаем
+        if (!origin)
+            return callback(null, true);
+        if (env.CORS_ORIGIN.includes(origin)) {
+            return callback(null, true);
+        }
+        logger.warn(`❌ CORS blocked for origin: ${origin}`);
+        return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
 }));
 // ✅ Логирование всех запросов
@@ -28,7 +30,7 @@ app.use((req, _res, next) => {
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 // ✅ Подключение всех API роутов
 app.use('/api', apiRouter);
-// ✅ Отдаём фронтенд dist
+// ✅ Отдаём фронтенд dist (SPA fallback)
 const distPath = path.resolve(process.cwd(), 'frontend/dist');
 if (fs.existsSync(distPath)) {
     app.use(express.static(distPath));
@@ -39,9 +41,9 @@ if (fs.existsSync(distPath)) {
 else {
     logger.warn(`⚠️ Frontend dist not found at ${distPath}`);
 }
-const PORT = Number(process.env.PORT) || 8080;
+const PORT = env.PORT;
 app.listen(PORT, '0.0.0.0', () => {
     logger.info(`✅ Server running on http://0.0.0.0:${PORT}`);
-    logger.info(`🔐 Allowed CORS origins: ${allowedOrigins.join(', ')}`);
+    logger.info(`🔐 Allowed CORS origins: ${env.CORS_ORIGIN.join(', ')}`);
 });
 //# sourceMappingURL=index.js.map

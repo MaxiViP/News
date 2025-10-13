@@ -4,21 +4,20 @@ import * as iconv from 'iconv-lite';
 import { normalize } from '../core/normalize.js';
 /** Карта лент по категориям (UTF-8 ленты) */
 const FEEDS = {
+    news: [
+        // здесь можно оставить пару общих источников
+        'https://lenta.ru/rss',
+        'https://iz.ru/xml/rss/all.xml',
+        'https://rssexport.rbc.ru/rbcnews/news/30/full.rss',
+        'https://www.mk.ru/rss/news/index.xml',
+        'https://ria.ru/export/rss2/archive/index.xml',
+    ],
     politics: ['https://ria.ru/export/rss2/politics/index.xml', 'https://www.mk.ru/rss/politics/index.xml'],
     economy: [
         'https://ria.ru/export/rss2/economy/index.xml',
         'https://rssexport.rbc.ru/rbcnews/economics/20/full.rss',
         'https://govoritmoskva.ru/rss/news/2/',
         'https://www.mk.ru/rss/economics/index.xml',
-    ],
-    news: [
-        'https://ria.ru/export/rss2/culture/index.xml',
-        'https://news.rambler.ru/starlife/',
-        'https://lenta.ru/rss',
-        'https://iz.ru/xml/rss/all.xml ',
-        'https://rssexport.rbc.ru/rbcnews/news/30/full.rss',
-        'http://www.infox.ru/themes/auto/rss.xml',
-        'https://www.mk.ru/rss/news/index.xml',
     ],
     science: [
         'https://ria.ru/export/rss2/science/index.xml',
@@ -36,18 +35,12 @@ const FEEDS = {
         'https://ria.ru/export/rss2/incidents/index.xml',
         'https://www.mk.ru/rss/incident/index.xml',
         'https://govoritmoskva.ru/rss/news/7/',
-        // 'https://lenta.ru/rss',
-        // 'https://lenta.ru/rss',
-        // 'https://lenta.ru/rss',
-        // 'https://lenta.ru/rss',
-        // 'https://lenta.ru/rss',
-        // 'https://lenta.ru/rss',
     ],
     auto: [
         'https://news-rss.ru/katalog-rss-kanalov/avto/',
-        ' http://www.gazeta.ru/export/rss/autonews.xml',
+        'http://www.gazeta.ru/export/rss/autonews.xml',
         'https://www.autostat.ru/news/rss/3/',
-        ' http://www.gazeta.ru/export/rss/auto.xml',
+        'http://www.gazeta.ru/export/rss/auto.xml',
     ],
     esports: [
         'https://www.goha.ru/feeds/rss',
@@ -55,19 +48,12 @@ const FEEDS = {
         'https://www.goha.ru/rss/:Epic Games',
         'https://www.goha.ru/rss/:VALORANT',
         'https://www.goha.ru/rss/:Стратегия',
-        'https://www.goha.ru/rss/:Star Wars',
-        'https://www.goha.ru/rss/:The Elder Scrolls Online',
         'https://www.goha.ru/rss/:World of Warcraft',
-        'https://www.goha.ru/rss/:Naruto',
         'https://www.goha.ru/rss/:Sony',
         'https://www.goha.ru/rss/:Киберспорт',
         'https://www.goha.ru/rss/:League of Legends',
-        'https://www.goha.ru/rss/:Star Trek',
         'https://www.goha.ru/rss/:Ubisoft',
         'https://www.goha.ru/rss/:PUBG',
-        'https://www.goha.ru/rss/:Виртуальный автоспорт',
-        'https://www.goha.ru/rss/:Mortal Online 2',
-        'https://www.goha.ru/rss/:Genshin Impact',
         'https://www.goha.ru/rss/:The International 2025',
     ],
 };
@@ -99,9 +85,13 @@ async function loadAndParse(url) {
     return parser.parseString(xml);
 }
 export async function fetchRss(opts) {
-    const urls = FEEDS[opts.category] ?? [];
-    const rows = [];
-    for (const url of urls) {
+    let rows = [];
+    // 🔥 если категория news → агрегируем все категории
+    const categories = opts.category === 'news'
+        ? ['politics', 'economy', 'science', 'tech', 'sports', 'incidents', 'auto', 'esports']
+        : [opts.category];
+    // параллельная загрузка
+    const requests = categories.flatMap(cat => (FEEDS[cat] ?? []).map(async (url) => {
         try {
             const feed = await loadAndParse(url);
             for (const it of feed.items ?? []) {
@@ -113,14 +103,15 @@ export async function fetchRss(opts) {
                     image: img,
                     publishedAt: it.isoDate ?? it.pubDate ?? new Date().toISOString(),
                     sourceName: feed.title ?? new URL(url).host,
-                }, opts.category));
+                }, cat // сохраняем категорию
+                ));
             }
         }
         catch (e) {
             console.warn('[rss] fail', url, e?.message);
         }
-        await new Promise(r => setTimeout(r, 200)); // не душим источники
-    }
+    }));
+    await Promise.all(requests);
     // 🔄 Дедуп
     const seen = new Set();
     let uniq = rows.filter(a => {
